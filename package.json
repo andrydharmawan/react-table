@@ -1,0 +1,41 @@
+{
+    "name": "@bgscore/react-table",
+    "version": "0.0.9",
+    "description": "React form component library using context and react-hook-form with dynamic arrays, groups, and validations.",
+    "main": "dist/index.cjs",
+    "module": "dist/index.js",
+    "type": "module",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "require": "./dist/index.cjs",
+            "import": "./dist/index.js"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/andrydharmawan/react-table.git"
+    },
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch"
+    },
+    "keywords": [],
+    "author": "Andry Bagus Dharmawan",
+    "license": "MIT",
+    "peerDependencies": {
+        "react": ">=17.0.0",
+        "react-dom": ">=17.0.0"
+    },
+    "devDependencies": {
+        "@types/react": "^19.1.1",
+        "@types/react-dom": "^19.1.2",
+        "tsup": "^8.4.0",
+        "typescript": "^5.8.3"
+    },
+    "dependencies": {
+    }
+}
