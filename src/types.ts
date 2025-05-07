@@ -1,8 +1,8 @@
 import moment from "moment";
 import { AxiosProgressEvent, AxiosResponse, GenericAbortSignal } from "axios";
 
-export type Children = ChildFunction | React.ReactNode;
-type ChildFunction = <T = unknown>(props: T) => Children;
+export type Children<T> = ChildFunction<T> | React.ReactNode;
+type ChildFunction<A = any> = <T = A>(props: T) => Children<T>;
 
 export interface PaginationMeta {
     limit: number;
@@ -100,7 +100,7 @@ export interface CacheData<DRes> {
     data: ApiResponse<DRes>;
 }
 
-export interface UseCallOptionsProps<DReq, DRes> extends OptionsHelper{
+export interface UseCallOptionsProps<DReq, DRes> extends OptionsHelper {
     logging: boolean;
     beforeRequest: (request: DReq) => DReq;
     afterResponse: (response: DRes) => DRes;

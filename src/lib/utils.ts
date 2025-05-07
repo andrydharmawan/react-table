@@ -5,7 +5,7 @@ export function generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => (c === 'x' ? random() : (random() & 0x3 | 0x8)).toString(16));
 }
 
-export function renderChildren<T = unknown>(children: Children, props: T): any {
+export function renderChildren<T = unknown>(children: Children<T>, props: T): any {
     return typeof children === "function" ? children(props) : children;
 };
 
