@@ -13,8 +13,9 @@ export const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequ
             if (handleToast && isCancel) handleToast(result);
         }
 
-        if (!authorized) {
-            if (onUnauthorized && isCancel) onUnauthorized(result)
+        if (!authorized && !options?.disabledHandleUnauthorized && isCancel) {
+            const handler = options?.onUnauthorized || onUnauthorized;
+            if (handler) handler(result);
         }
 
         if (callback) callback(result)

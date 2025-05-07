@@ -42,6 +42,8 @@ export interface OptionsHelper {
     signal: GenericAbortSignal;
     responseType: ResponseType;
     onUploadProgress: (props: AxiosProgressEvent) => void;
+    onUnauthorized: (response: ApiResponse) => void;
+    disabledHandleUnauthorized: boolean;
 }
 
 export type ClientCallback<T> = (response: AxiosResponse<T>, err?: any) => any;
