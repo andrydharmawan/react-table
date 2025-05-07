@@ -10,5 +10,5 @@ export default defineConfig({
     minifyIdentifiers: true,
     sourcemap: false,
     splitting: true,
-    external: ["react", "react-dom"],
+    external: ["react", "react-dom", "moment"],
 })

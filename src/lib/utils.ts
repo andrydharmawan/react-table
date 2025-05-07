@@ -1,4 +1,4 @@
-import { Children, FormRef } from "../types";
+import { Children } from "../types";
 
 export function generateUUID() {
     const random = () => (Math.random() * 16) % 16 | 0;
@@ -87,4 +87,29 @@ export function isArray(data: any, length?: number): boolean {
         }
     }
     return result;
+}
+
+
+export function isNotEmpty(value: unknown): boolean {
+    // Check if the value is null or undefined
+    if (value == null) return false;
+
+    // Check if the value is an empty string
+    if (typeof value === "string" && value.trim() === "") return false;
+
+    // Check if the value is an empty array
+    if (Array.isArray(value) && value.length === 0) return false;
+
+    // Check if the value is an empty object
+    if (
+        typeof value === "object" &&
+        value !== null &&
+        !Array.isArray(value) &&
+        Object.keys(value).length === 0
+    ) {
+        return false;
+    }
+
+    // If none of the above, return true
+    return true;
 }

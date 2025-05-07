@@ -1,96 +1,132 @@
-import { ReactNode } from "react";
-import { ControllerFieldState, ControllerRenderProps, FieldValues, UseFormStateReturn, EventType, UseFormReturn, UseFieldArrayReturn, DeepPartialSkipArrayKey } from "react-hook-form";
-
-interface FormDefaultProps {
-    disabled?: boolean;
-    readOnly?: boolean;
-    name?: string;
-}
-
-export interface FormProps<T = unknown> extends FormDefaultProps {
-    children?: Children;
-    formData?: Partial<T>;
-    onSubmit?: OnSubmit<T>;
-    className?: string;
-    onChange?: (values: T, event: {
-        name?: string | undefined;
-        type?: EventType | undefined;
-    }) => void
-}
-
-export interface FormRef<T = unknown> extends FormDefaultProps, Omit<UseFormReturn, "reset"> {
-    reset: (field?: string | string[]) => void;
-    updateData: (values: Partial<T>) => void;
-    getData: (field?: string) => T;
-    triggerSubmit: (addValues?: T, options?: OptionsSubmit) => void;
-    formControl: UseFormReturn;
-    useFieldArray: (name: string) => UseFieldArrayReturn;
-    useWatch: UseWatch<T>;
-    isSubmit: boolean;
-    formId: string;
-    name?: string;
-}
-
-export interface ControllerProps {
-    dataField: string;
-    validationRules?: ValidationRules;
-    label?: string | ReactNode;
-    noLabel?: boolean;
-    disabled?: boolean;
-    hidden?: boolean;
-    readOnly?: boolean;
-}
+import moment from "moment";
+import { AxiosProgressEvent, AxiosResponse, GenericAbortSignal } from "axios";
 
 export type Children = ChildFunction | React.ReactNode;
 type ChildFunction = <T = unknown>(props: T) => Children;
 
-export type BgsFormType = <T, >(props: FormProps<T> & { ref?: React.RefObject<FormRef<T>> }) => any;
-
-type PatternType = "alphabet" | "alphanumber" | "number" | "lowercase" | "url" | "uppercase" | "mixedcase" | "specialcharacters";
-
-export interface ValidationCallback {
-    message?: string | ((label: string) => string);
-    validation: (value: any) => boolean | string | null | undefined | number | object;
+export interface PaginationMeta {
+    limit: number;
+    page: number;
+    totalItems: number;
+    totalPages: number;
 }
 
-export interface ValidationOptions {
-    minLength?: number;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-    match?: string | { dataField: string; label: string };
-    diff?: string | { dataField: string; label: string };
-    regexp?: {
-        regexp: RegExp,
-        message: string
-    };
-    pattern?: PatternType;
-    required?: boolean;
-    email?: boolean;
-    [x: string]: ValidationCallback | string | number | undefined | boolean | object;
+export interface ApiResponse<T = any> {
+    status: boolean;
+    data: T;
+    paging?: PaginationMeta;
+    message: string;
+    code: number;
 }
 
-export type ValidationRules = "required"
-    | "email"
-    | ValidationOptions
+export type CallbackHelper<T = any> = ((response: ApiResponse<T>) => (void | ApiResponse<T>))
 
+type HandleCallback<T = any> = (props: AxiosResponse<T>, err?: any) => ApiResponse;
 
-export interface Controller {
-    field: ControllerRenderProps<FieldValues, string>;
-    fieldState: ControllerFieldState;
-    formState: UseFormStateReturn<FieldValues>;
+export interface UseHelperProps {
+    url: string;
+    headers?: Record<string, string>;
+    token?: string | null | undefined;
+    onCallback: HandleCallback;
+    onUnauthorized: (response: ApiResponse) => void;
+    handleAuthorization: (response: ApiResponse, options?: OptionsHelper) => boolean;
+    handleToast: (response: ApiResponse) => void;
+    beforeRequest?: (data: any) => any;
 }
 
-export interface OptionsSubmit {
-    validate?: boolean
+export interface OptionsHelper {
+    infoSuccess: boolean;
+    infoError: boolean;
+    token: boolean | string;
+    headers: Record<string, string>;
+    signal: GenericAbortSignal;
+    responseType: ResponseType;
+    onUploadProgress: (props: AxiosProgressEvent) => void;
 }
 
-interface OnSubmitOptions<T = any> extends FormRef<T>, OptionsSubmit {
+export type ClientCallback<T> = (response: AxiosResponse<T>, err?: any) => any;
 
+export enum HttpMethod {
+    POST = "POST",
+    PUT = "PUT",
+    PATCH = "PATCH",
+    DELETE = "DELETE",
+    GET = "GET"
 }
 
-export type OnSubmit<T = any> = (values: T, options: OnSubmitOptions) => void
+export type ApiMethod<DReq = any, DRes = DReq> = (data: DReq, callback?: CallbackHelper<DRes>, options?: Partial<OptionsHelper>) => Promise<ApiResponse<DRes>>;
+export type FetchRequestMethod<DRes = any> = <Res = DRes>(callback?: CallbackHelper<Res>, options?: Partial<OptionsHelper>) => Promise<ApiResponse<Res>>;
 
-type UseWatch<T = any> = (name: string) => DeepPartialSkipArrayKey<T>
+export type ApiDefaultMethod<DReq = any, DRes = DReq> = <Req = DReq, Res = DRes>(url: string, data: Req, callback?: CallbackHelper<Res>, options?: Partial<OptionsHelper>) => Promise<ApiResponse<Res>>;
+export type ApiDefaultFetch<DRes = any> = <Res = DRes>(url: string, callback?: CallbackHelper<Res>, options?: Partial<OptionsHelper>) => Promise<ApiResponse<Res>>;
 
-type Options<T = any> = (key: "onChange", value: T) => void
+export type ResponseType =
+    | 'arraybuffer'
+    | 'blob'
+    | 'document'
+    | 'json'
+    | 'text'
+    | 'stream'
+    | 'formdata';
+
+    type Options<T> = Partial<ApiResponse<T>> & {
+    loading: boolean;
+    refresh: () => void;
+    abort: () => void;
+    clear: () => void;
+    response: ApiResponse<T> | undefined | null
+}
+
+export type UseCallReturnType<T> = [
+    T | undefined,
+    Options<T>
+]
+
+interface TimeoutConfig {
+    value: number;
+    unit: moment.DurationInputArg2
+}
+
+interface CacheProps {
+    key: string;
+    timeout: number | TimeoutConfig;
+    persistence?: boolean;
+}
+
+export interface CacheData<DRes> {
+    expired: string;
+    data: ApiResponse<DRes>;
+}
+
+export interface UseCalOptionsProps<DReq, DRes> {
+    logging: boolean;
+    beforeRequest: (request: DReq) => DReq;
+    afterResponse: (response: DRes) => DRes;
+    onBeforeRequest: (request: DReq) => void;
+    onAfterResponse: (response: ApiResponse<DRes>) => void;
+    trigger: any[];
+    hold: boolean;
+    onChange: (data: DReq, options: Options<DRes>) => void;
+    cache: CacheProps;
+    refreshInterval: number | TimeoutConfig;
+}
+
+export interface UseApiActionProps<Req, Res> {
+    onSuccess?: OnCallback<Res>;
+    onError?: OnCallback<Res>;
+    logging?: boolean;
+    beforeRequest?: (request: Req) => Req;
+    afterResponse?: OnCallback<Res>;
+}
+
+type OnCallback<T = any> = (response: ApiResponse<T>) => void
+
+export type UseApiActionReturnType<Req, Res> = [
+    (values: Req) => void,
+    Partial<ApiResponse<Res>> & {
+        abort: () => void;
+        reset: () => void;
+        loading: boolean;
+        progress: number;
+    }
+]
