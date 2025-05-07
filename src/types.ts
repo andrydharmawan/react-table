@@ -100,7 +100,7 @@ export interface CacheData<DRes> {
     data: ApiResponse<DRes>;
 }
 
-export interface UseCallOptionsProps<DReq, DRes> {
+export interface UseCallOptionsProps<DReq, DRes> extends OptionsHelper{
     logging: boolean;
     beforeRequest: (request: DReq) => DReq;
     afterResponse: (response: DRes) => DRes;
@@ -113,7 +113,7 @@ export interface UseCallOptionsProps<DReq, DRes> {
     refreshInterval: number | TimeoutConfig;
 }
 
-export interface UseApiActionProps<Req, Res> {
+export interface UseApiActionProps<Req, Res> extends OptionsHelper {
     onSuccess?: OnCallback<Res>;
     onError?: OnCallback<Res>;
     logging?: boolean;

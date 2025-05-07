@@ -99,7 +99,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
                 options?.onBeforeRequest(data)
             }
 
-            const res = await api(data, undefined, { signal: controller.signal })
+            const res = await api(data, undefined, { ...options, signal: controller.signal })
 
             if (options?.afterResponse && res?.data) res.data = options?.afterResponse(res.data)
 

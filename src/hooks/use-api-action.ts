@@ -24,6 +24,7 @@ export const useApiAction = <DReq, DRes>(api: ApiMethod<DReq, DRes>, props?: Use
         }
 
         const res = await api(values, undefined, {
+            ...props,
             signal: controller.signal,
             onUploadProgress: (progressEvent) => {
                 const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
