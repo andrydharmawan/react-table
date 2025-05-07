@@ -132,3 +132,15 @@ export type UseApiActionReturnType<Req, Res> = [
         progress: number;
     }
 ]
+
+export type NestedKeyOf<T> = T extends object
+    ? T extends any[]
+    ? string
+    : {
+        [K in keyof T]: T[K] extends object
+        ? T[K] extends any[]
+        ? `${K & string}`
+        : `${K & string}` | `${K & string}.${NestedKeyOf<T[K]>}`
+        : `${K & string}`;
+    }[keyof T]
+    : never;
