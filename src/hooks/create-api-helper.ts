@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
 import { UseHelperProps, ApiResponse, OptionsHelper, CallbackHelper, ClientCallback, HttpMethod, ApiDefaultMethod, ApiDefaultFetch as ApiDefaultFetch } from "../types";
 
-const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequest, onCallback, headers: headerProps, onUnauthorized, handleToast, handleAuthorization }: UseHelperProps) => {
+export const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequest, onCallback, headers: headerProps, onUnauthorized, handleToast, handleAuthorization }: UseHelperProps) => {
     const handleResponse = (response: AxiosResponse, callback?: CallbackHelper, options?: OptionsHelper, err?: any): any => {
         const result: ApiResponse = onCallback(response, err)
 
@@ -120,5 +120,3 @@ const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequest, on
         upload,
     }
 }
-
-export default createApiHelper;
