@@ -1,9 +1,9 @@
 import moment from "moment";
 import { useEffect, useRef, useState } from "react"
 import { isNotEmpty } from "../lib/utils";
-import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCalOptionsProps } from "../types";
+import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCallOptionsProps } from "../types";
 
-export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, options?: Partial<UseCalOptionsProps<DReq, DRes>>): UseCallReturnType<DRes> => {
+export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, options?: Partial<UseCallOptionsProps<DReq, DRes>>): UseCallReturnType<DRes> => {
     const [loading, setLoading] = useState<boolean>(false)
     const [response, setResponse] = useState<ApiResponse<DRes> | undefined | null>()
     const [abortController, setAbortController] = useState<AbortController | null>(null);

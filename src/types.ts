@@ -71,7 +71,7 @@ export type ResponseType =
     | 'stream'
     | 'formdata';
 
-    type Options<T> = Partial<ApiResponse<T>> & {
+export type OptionsCallReturn<T> = Partial<ApiResponse<T>> & {
     loading: boolean;
     refresh: () => void;
     abort: () => void;
@@ -81,7 +81,7 @@ export type ResponseType =
 
 export type UseCallReturnType<T> = [
     T | undefined,
-    Options<T>
+    OptionsCallReturn<T>
 ]
 
 interface TimeoutConfig {
@@ -100,7 +100,7 @@ export interface CacheData<DRes> {
     data: ApiResponse<DRes>;
 }
 
-export interface UseCalOptionsProps<DReq, DRes> {
+export interface UseCallOptionsProps<DReq, DRes> {
     logging: boolean;
     beforeRequest: (request: DReq) => DReq;
     afterResponse: (response: DRes) => DRes;
@@ -108,7 +108,7 @@ export interface UseCalOptionsProps<DReq, DRes> {
     onAfterResponse: (response: ApiResponse<DRes>) => void;
     trigger: any[];
     hold: boolean;
-    onChange: (data: DReq, options: Options<DRes>) => void;
+    onChange: (data: DReq, options: OptionsCallReturn<DRes>) => void;
     cache: CacheProps;
     refreshInterval: number | TimeoutConfig;
 }
