@@ -1,19 +1,19 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
 import { UseHelperProps, ApiResponse, OptionsHelper, CallbackHelper, ClientCallback, HttpMethod, ApiDefaultMethod, ApiDefaultFetch as ApiDefaultFetch } from "../types";
 
-export const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequest, onCallback, headers: headerProps, onUnauthorized, handleToast, handleAuthorization }: UseHelperProps) => {
+export const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequest, onCallback, headers: headerProps, onUnauthorized, handleToast, handleAuthorization = () => false }: UseHelperProps) => {
     const handleResponse = (response: AxiosResponse, callback?: CallbackHelper, options?: OptionsHelper, err?: any): any => {
         const result: ApiResponse = onCallback(response, err)
 
         const isCancel = err?.code !== "ERR_CANCELED";
 
-        const unauthorized = handleAuthorization(result, options)
+        const authorized = handleAuthorization(result, options)
 
         if ((options?.infoSuccess && result.status) || (options?.infoError && !result.status)) {
             if (handleToast && isCancel) handleToast(result);
         }
 
-        if (unauthorized) {
+        if (!authorized) {
             if (onUnauthorized && isCancel) onUnauthorized(result)
         }
 
