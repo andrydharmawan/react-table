@@ -28,9 +28,9 @@ export interface UseHelperProps {
     headers?: Record<string, string>;
     token?: string | null | undefined;
     onCallback: HandleCallback;
-    onUnauthorized: (response: ApiResponse) => void;
-    handleAuthorization: (response: ApiResponse, options?: OptionsHelper) => boolean;
-    handleToast: (response: ApiResponse) => void;
+    onUnauthorized?: (response: ApiResponse) => void;
+    handleAuthorization?: (response: ApiResponse, options?: OptionsHelper) => boolean;
+    handleToast?: (response: ApiResponse) => void;
     beforeRequest?: (data: any) => any;
 }
 
