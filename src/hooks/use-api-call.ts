@@ -19,10 +19,6 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
             prevDataRef.current = data;
         }
 
-        if (options?.logging && options?.hold) {
-            console.log("Hold active");
-        }
-
         options?.onChange && options?.onChange(data, resultOptions)
     }, [data, options?.hold, ...(options?.trigger || [])])
 
@@ -41,6 +37,10 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
     }, []);
 
     const refresh = async () => {
+        if (options?.hold) {
+            options?.logging && console.log("Hold active");
+        }
+
         if (options?.beforeRequest) {
             data = options?.beforeRequest(data)
         }
