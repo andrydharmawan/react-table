@@ -10,10 +10,10 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
     const prevDataRef = useRef<DReq | undefined>(undefined);
 
     useEffect(() => {
-        const prevDataString = JSON.stringify(prevDataRef.current);
-        const currentDataString = JSON.stringify(data);
+        const prevDataString = JSON.stringify(isNotEmpty(prevDataRef.current) ? prevDataRef.current : "");
+        const currentDataString = JSON.stringify(isNotEmpty(data) ? data : "");
 
-        if (prevDataString !== currentDataString && isNotEmpty(data) && !options?.hold) {
+        if (prevDataString !== currentDataString && !options?.hold) {
             setResponse(null)
             refresh();
             prevDataRef.current = data;
