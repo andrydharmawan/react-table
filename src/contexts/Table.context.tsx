@@ -4,12 +4,12 @@ import { buildHeaderLevels, flattenColumns, parseColumns, parseFooter, parseMast
 import { ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
 import { BgsCoreProps, useBgsCore } from "./BgsCore.context";
 
-export interface BgsTableContextData<T = any> extends BgsTableProps<T> {
+export interface BgsTableContextData<P = unknown, D = any> extends BgsTableProps<P, D> {
     tableRef: React.RefObject<HTMLTableElement | null>;
     child: ReactNode;
 }
 
-export interface BgsTableRef<P = unknown, D = any> extends BgsTableProps<D>, BgsCoreProps {
+export interface BgsTableRef<P = unknown, D = any> extends BgsTableProps<P, D>, BgsCoreProps {
     columnsProps: ColumnMapping[];
     headers: HeaderLevel[][]
     footers: FooterProps[][];
@@ -29,7 +29,7 @@ export function useBgsTable<P = unknown, D = any>(): BgsTableRef<P, D> {
     return context as BgsTableRef<P, D>;
 }
 
-type BgsTableProviderType = <T, >(props: PropsWithChildren<BgsTableContextData<T>> & { ref?: React.ForwardedRef<BgsTableRef> }) => any;
+type BgsTableProviderType = <P = unknown, D = any>(props: PropsWithChildren<BgsTableContextData<P, D>> & { ref?: React.ForwardedRef<BgsTableRef> }) => any;
 
 const BgsTableProvider: BgsTableProviderType = forwardRef(({ children, child, ...others }, ref) => {
     const columnsProps = parseColumns(child);
@@ -39,7 +39,7 @@ const BgsTableProvider: BgsTableProviderType = forwardRef(({ children, child, ..
     const footers = parseFooter(child)
     const bgsCore = useBgsCore()
 
-    const value: BgsTableRef = {
+    const value: BgsTableRef<any> = {
         ...others,
         ...bgsCore,
         columnsProps,
