@@ -21,7 +21,7 @@ export type BgsCoreProps = {
     TableFooter: TFooterProps;
     TableRow: TRowProps;
     TableHead: THeadProps<any>;
-    TableCell: TCellProps<any>;
+    TableCell: TCellProps<unknown>;
 }
 
 const BgsCoreContext = createContext<BgsCoreProps | undefined>(undefined);

@@ -6,6 +6,7 @@ import { useFormatted } from "../hooks/use-formatted";
 
 export type TableCellReturnData<P = unknown, D = any, K extends NestedKeyOf<D> = NestedKeyOf<D>> = ColumnProps<P, D, K> & ColumnData<D, P, PathValue<D, K>> & TableRowReturnData<P, D> & {
     columnRef: React.RefObject<HTMLTableCellElement | null>;
+    handleCellClick: React.MouseEventHandler<HTMLTableCellElement>;
 }
 
 const BgsTableContext = createContext<TableCellReturnData | undefined>(undefined);
@@ -35,9 +36,14 @@ type TableCellProviderProps<P = unknown, D = any> = ColumnData & {
 
 export default function TableCellProvider({ children, ...others }: TableCellProviderProps) {
     const row = useBgsTableRow()
+
+    const handleCellClick: React.MouseEventHandler<HTMLTableCellElement> = (event) => {
+        row.onCellClick && row.onCellClick({ ...event, ...value })
+    }
     const value: TableCellReturnData = {
         ...row,
         ...others,
+        handleCellClick,
     }
 
     return <BgsTableContext.Provider value={value}>

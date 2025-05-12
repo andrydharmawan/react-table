@@ -33,8 +33,8 @@ const Row: TRowProps = ({ rowIndex, rowData }) => {
 
     return <>
         <TableRowProvider key={rowIndex} open={masterDetail?.defaultOpen} rowRef={rowRef} rowData={rowData} rowIndex={rowIndex}>
-            {({ open }) => <>
-                <TableRow ref={rowRef} rowData={rowData} rowIndex={rowIndex} type={TRowTypeEnum.body}>
+            {({ open, handleRowClick }) => <>
+                <TableRow onClick={handleRowClick} ref={rowRef} rowData={rowData} rowIndex={rowIndex} type={TRowTypeEnum.body}>
                     {columns.map((column, columnIndex) => (
                         <Cell key={`${columnIndex}-${rowIndex}`} {...column as any} rowIndex={rowIndex} columnIndex={columnIndex} />
                     ))}
@@ -99,15 +99,27 @@ const Cell: TCellProps<unknown> = (props) => {
 
     let value = dataField && getFieldValue(rowData, dataField);//sama bgttt - TCell.context.tsx
 
-    if(value && dataType){
+    if (value && dataType) {
         value = useFormatted(value, dataType)
     }
 
     return <>
         <TableCellProvider key={columnIndex} columnRef={columnRef} column={props} columnIndex={columnIndex} value={value} rowIndex={rowIndex} rowData={rowData}>
-            <TableCell ref={columnRef} key={columnIndex} {...props} data-sticky={sticky} type={TCellTypeEnum.body}>
-                {props.children ? renderChildren(props.children, { ...props, rowData, rowIndex, columnIndex, value }) : value}
-            </TableCell>
+            {({ handleCellClick }) => <>
+                <TableCell
+                    ref={columnRef}
+                    key={columnIndex}
+                    {...props}
+                    onClick={e => {
+                        handleCellClick(e)
+                        props.onClick && props.onClick(e)
+                    }}
+                    data-sticky={sticky}
+                    type={TCellTypeEnum.body}
+                >
+                    {props.children ? renderChildren(props.children, { ...props, rowData, rowIndex, columnIndex, value }) : value}
+                </TableCell>
+            </>}
         </TableCellProvider>
     </>
 }

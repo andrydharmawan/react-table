@@ -8,6 +8,8 @@ export type TableRowReturnData<P = unknown, D = any> = RowData<D> & BgsTableRef<
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     toggleOpen: () => void;
     rowRef: React.RefObject<HTMLTableRowElement | null>;
+    handleRowClick: React.MouseEventHandler<HTMLTableRowElement>;
+
 }
 
 const BgsTableContext = createContext<TableRowReturnData | undefined>(undefined);
@@ -30,12 +32,17 @@ export default function TableRowProvider<P = unknown, D = any>({ children, open:
     const table = useBgsTable()
     const [open, setOpen] = useState<boolean>(openDefault);
 
+    const handleRowClick: React.MouseEventHandler<HTMLTableRowElement> = (event) => {
+        table.onRowClick && table.onRowClick({ ...event, ...value })
+    }
+
     const value: TableRowReturnData = {
         ...others,
         ...table,
         open,
         setOpen,
-        toggleOpen: () => setOpen(prev => !prev)
+        toggleOpen: () => setOpen(prev => !prev),
+        handleRowClick,
     }
 
     return <BgsTableContext.Provider value={value}>
