@@ -102,7 +102,7 @@ function formatNumber(value: unknown, { thouSep, decSep, decDigits, method }: Op
 function formatDate(value: string, { display, value: valueFormat }: OptionsDate): string {
     if (!isNotEmpty(value)) return value;
 
-    const result = moment(value, valueFormat, true)
+    const result = moment(value, valueFormat)
 
     return result.isValid() ? result.format(display) : value;
 }
