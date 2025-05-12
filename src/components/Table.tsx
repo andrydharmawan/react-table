@@ -17,11 +17,11 @@ export interface BgsTableProps<T = any> {
     TableCell: TCellProps<any>;
 }
 
-type BgsTableType = <T, >(props: PropsWithChildren<BgsTableProps<T>> & { ref?: React.ForwardedRef<BgsTableRef> }) => any;
+type BgsTableType = <P = unknown, D = any>(props: PropsWithChildren<BgsTableProps<D>> & { ref?: React.ForwardedRef<BgsTableRef<P, D>> }) => any;
 
 const BgsTable: BgsTableType = React.forwardRef((props, ref) => {
     const tableRef = useRef<HTMLTableElement>(null)
-    const table = useRef<BgsTableRef>(null)
+    const table = useRef<BgsTableRef<any>>(null)
 
     const {
         children,
