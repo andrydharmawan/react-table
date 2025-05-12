@@ -26,7 +26,7 @@ export function useBgsCore(): BgsCoreProps {
     return context;
 }
 
-export const BgsTableProvider = ({ children, ...others }: PropsWithChildren<BgsCoreProps>) => {
+export const BgsCoreProvider = ({ children, ...others }: PropsWithChildren<BgsCoreProps>) => {
     const value: BgsCoreProps = {
         ...others,
     }
