@@ -38,7 +38,7 @@ export default function TableCellProvider({ children, ...others }: TableCellProv
     const row = useBgsTableRow()
 
     const handleCellClick: React.MouseEventHandler<HTMLTableCellElement> = (event) => {
-        row.onCellClick && row.onCellClick({ event, ...value })
+        // row.onCellClick && row.onCellClick({ event, ...value })
     }
     const value: TableCellReturnData = {
         ...row,
