@@ -179,7 +179,7 @@ export type ColumnMapping = ColumnProps & {
     subColumns?: ColumnProps[]
 }
 
-export type ColumnGroupProps = {
+export type ColumnGroupProps<T = unknown> = T & {
     caption?: string;
     renderHeader?: () => React.ReactNode;
     children?: React.ReactNode;

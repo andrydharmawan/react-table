@@ -9,7 +9,7 @@ export const createColumn = <T,>(): CreateColumn<T> => {
     return ColumnComponent
 };
 
-export const createColumnGroup = (): React.FC<ColumnGroupProps> => {
+export const createColumnGroup = <T,>(): React.FC<ColumnGroupProps<T>> => {
     const ColumnComponent: React.FC<any> = () => {
         return <></>;
     };
