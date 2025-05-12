@@ -1,6 +1,6 @@
 {
     "name": "@bgscore/react-table",
-    "version": "0.0.36",
+    "version": "0.0.37",
     "description": "A React utility library that provides advanced API hooks (fetch, mutation, caching) and a customizable Table component with built-in pagination, sorting, and loading states. Built for scalable and flexible data handling in modern React applications.",
     "main": "dist/index.cjs",
     "module": "dist/index.js",

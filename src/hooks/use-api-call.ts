@@ -6,14 +6,15 @@ import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCallOptionsPro
 export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, options?: Partial<UseCallOptionsProps<DReq, DRes>>): UseCallReturnType<DRes> => {
     const [loading, setLoading] = useState<boolean>(false)
     const [response, setResponse] = useState<ApiResponse<DRes> | undefined | null>()
-    const [abortController, setAbortController] = useState<AbortController | null>(null);
     const prevDataRef = useRef<DReq | undefined>(undefined);
+    const abortControllerRef = useRef<AbortController>(null);
 
     useEffect(() => {
         const prevDataString = JSON.stringify(isNotEmpty(prevDataRef.current) ? prevDataRef.current : "");
         const currentDataString = JSON.stringify(isNotEmpty(data) ? data : "");
+        const isInitial = prevDataRef.current === undefined;
 
-        if (prevDataString !== currentDataString && !options?.hold) {
+        if ((prevDataString !== currentDataString || isInitial) && !options?.hold) {
             setResponse(null)
             refresh();
             prevDataRef.current = data;
@@ -33,6 +34,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
 
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
+            abortControllerRef.current?.abort();
         };
     }, []);
 
@@ -87,8 +89,10 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
 
 
         if (typeof api === "function") {
+            abortControllerRef.current?.abort();
+
             const controller = new AbortController();
-            setAbortController(controller);
+            abortControllerRef.current = controller;
             setLoading(true)
 
             if (options?.logging) {
@@ -149,9 +153,9 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
     }, [options?.refreshInterval, refresh]);
 
     const abort = () => {
-        abortController?.abort()
+        abortControllerRef.current?.abort();
+        abortControllerRef.current = null;
         setLoading(false)
-        setAbortController(null)
     };
 
     const clear = () => {

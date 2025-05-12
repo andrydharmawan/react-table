@@ -138,8 +138,9 @@ export function parseColumns<DRes>(
                     caption,
                 })
             } else if (isColumnGroup(child)) {
-                const { children, ...others } = child.props
+                const { children, className, ...others } = child.props
                 result.push({
+                    classNameHeader: className,
                     ...(others as ColumnGroupProps),
                     subColumns: parseColumns<DRes>(children),
                 })

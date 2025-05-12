@@ -119,6 +119,7 @@ export interface UseApiActionProps<Req, Res> extends OptionsHelper {
     logging?: boolean;
     beforeRequest?: (request: Req) => Req;
     afterResponse?: OnCallback<Res>;
+    abortOnUnmount?: boolean;
 }
 
 type OnCallback<T = any> = (response: ApiResponse<T>) => void
@@ -180,9 +181,9 @@ export type ColumnMapping = ColumnProps & {
 }
 
 export type ColumnGroupProps<T = unknown> = T & {
-    caption?: string;
-    renderHeader?: () => React.ReactNode;
+    caption?: string | React.ReactNode;
     children?: React.ReactNode;
+    className?: string;
     sticky?: "left" | "right";
 }
 
@@ -285,6 +286,6 @@ export type FooterProps<T = unknown> = Omit<React.ComponentProps<"td">, "colSpan
     suffix?: React.ReactNode;
     type?: FooterType;
     colSpan?: true | number;
-} 
+}
 
 export type ElementType<T> = T extends (infer U)[] ? U : T;
