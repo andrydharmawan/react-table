@@ -3,8 +3,7 @@ import { Children, NestedKeyOf, ColumnProps } from "../types";
 import { renderChildren } from "../lib/utils";
 import { BgsTableRef, useBgsTable } from "./Table.context";
 
-export type TableHeadReturnData<P = unknown, D = any, K extends NestedKeyOf<D> = NestedKeyOf<D>> = ColumnProps<P, D, K> & BgsTableRef<P, D> & {
-    columnRef: React.RefObject<HTMLTableCellElement | null>;
+export type TableHeadReturnData<P = unknown, D = any, K extends NestedKeyOf<D> = NestedKeyOf<D>> = ColumnProps<P, D, K> & BgsTableRef<P, D> & TableHeadProviderProps & {
 }
 
 const BgsTableContext = createContext<TableHeadReturnData | undefined>(undefined);
@@ -27,7 +26,7 @@ type TableHeadProviderProps<P = unknown, D = any> = {
 
 export default function TableColumnHeadProvider({ children, ...others }: TableHeadProviderProps) {
     const table = useBgsTable()
-    
+
     const value: TableHeadReturnData = {
         ...table,
         ...others,
