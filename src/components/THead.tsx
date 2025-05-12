@@ -28,7 +28,7 @@ export default function THead() {
 const Cell: THeadProps<unknown> = (props) => {
     const columnRef = useRef<HTMLTableCellElement>(null)
 
-    let { sticky, caption, rowIndex } = props;
+    let { sticky, caption, rowIndex, columnIndex } = props;
 
     const {
         TableHead,
@@ -68,10 +68,19 @@ const Cell: THeadProps<unknown> = (props) => {
         window.addEventListener("resize", handleResize);
         handleResize();
 
+        const col = tableRef.current?.querySelector("colgroup")?.children[columnIndex];
+
+        const resizeObserver = new ResizeObserver(() => {
+            handleResize();
+        });
+
+        col && resizeObserver.observe(col);
+
         return () => {
+            resizeObserver.disconnect();
             window.removeEventListener("resize", handleResize);
         };
-    }, [sticky, rowIndex, tableRef.current, children]);
+    }, [sticky, rowIndex, tableRef.current, children, columnIndex]);
 
     return <>
         <TableHead {...props} ref={columnRef} data-sticky={sticky}>

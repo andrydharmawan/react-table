@@ -94,10 +94,19 @@ const Cell: TCellProps<unknown> = (props) => {
         window.addEventListener("resize", handleResize);
         handleResize();
 
+        const col = tableRef.current?.querySelector("colgroup")?.children[columnIndex];
+
+        const resizeObserver = new ResizeObserver(() => {
+            handleResize();
+        });
+
+        col && resizeObserver.observe(col);
+
         return () => {
+            resizeObserver.disconnect();
             window.removeEventListener("resize", handleResize);
         };
-    }, [sticky, rowIndex, tableRef.current, children, rowRef.current, columnRef.current]);
+    }, [sticky, rowIndex, tableRef.current, children, rowRef.current, columnRef.current, columnIndex]);
 
     let value = dataField && getFieldValue(rowData, dataField);//sama bgttt - TCell.context.tsx
 
