@@ -2,6 +2,7 @@ import BgsTable from "./components/Table";
 
 export default BgsTable;
 
+export { type BgsTableProps } from "./components/Table";
 export * from "./hooks/use-api-call";
 export * from "./hooks/use-delay";
 export * from "./hooks/use-formatted";
