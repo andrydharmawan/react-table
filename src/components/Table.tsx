@@ -10,8 +10,8 @@ import { TableCellReturnData } from "../contexts/TCell.context";
 
 export interface BgsTableProps<P = unknown, D = any> {
     dataSource: D;
-    onRowClick?: (props: TableRowReturnData & { event: React.MouseEvent<HTMLTableRowElement, MouseEvent> }) => void;
-    onCellClick?: (props: TableCellReturnData & { event: React.MouseEvent<HTMLTableCellElement, MouseEvent> }) => void;
+    onRowClick?: (props: TableRowReturnData<P, D> & { event: React.MouseEvent<HTMLTableRowElement, MouseEvent> }) => void;
+    onCellClick?: (props: TableCellReturnData<P, D> & { event: React.MouseEvent<HTMLTableCellElement, MouseEvent> }) => void;
 }
 
 type BgsTableType = <P = unknown, D = any>(props: PropsWithChildren<BgsTableProps<P, D>> & { ref?: React.ForwardedRef<BgsTableRef<P, D>> }) => any;
