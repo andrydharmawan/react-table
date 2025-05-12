@@ -26,11 +26,11 @@ export function useBgsCore(): BgsCoreProps {
     return context;
 }
 
-interface BgsCoreProvider {
+interface BgsCoreProviderProps {
     value: BgsCoreProps;
 }
 
-export const BgsCoreProvider = ({ children, value: options }: PropsWithChildren<BgsCoreProvider>) => {
+export const BgsCoreProvider = ({ children, value: options }: PropsWithChildren<BgsCoreProviderProps>) => {
     const value: BgsCoreProps = {
         ...options,
     }
