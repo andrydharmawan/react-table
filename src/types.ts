@@ -286,3 +286,5 @@ export type FooterProps<T = unknown> = Omit<React.ComponentProps<"td">, "colSpan
     type?: FooterType;
     colSpan?: true | number;
 } 
+
+export type ElementType<T> = T extends (infer U)[] ? U : T;

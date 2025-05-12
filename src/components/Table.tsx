@@ -7,11 +7,12 @@ import TFoot from "./TFoot";
 import { useBgsCore } from "../contexts/BgsCore.context";
 import { TableRowReturnData } from "../contexts/TRow.context";
 import { TableCellReturnData } from "../contexts/TCell.context";
+import { ElementType } from "../types";
 
 export interface BgsTableProps<P = unknown, D = any> {
     dataSource: D;
-    onRowClick?: (props: TableRowReturnData<P, D> & { event: React.MouseEvent<HTMLTableRowElement, MouseEvent> }) => void;
-    onCellClick?: (props: TableCellReturnData<P, D> & { event: React.MouseEvent<HTMLTableCellElement, MouseEvent> }) => void;
+    onRowClick?: (props: TableRowReturnData<P, ElementType<D>> & { event: React.MouseEvent<HTMLTableRowElement, MouseEvent> }) => void;
+    onCellClick?: (props: TableCellReturnData<P, ElementType<D>> & { event: React.MouseEvent<HTMLTableCellElement, MouseEvent> }) => void;
 }
 
 type BgsTableType = <P = unknown, D = any>(props: PropsWithChildren<BgsTableProps<P, D>> & { ref?: React.ForwardedRef<BgsTableRef<P, D>> }) => any;
