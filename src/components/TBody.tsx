@@ -34,7 +34,10 @@ const Row: TRowProps = ({ rowIndex, rowData }) => {
     return <>
         <TableRowProvider key={rowIndex} open={masterDetail?.defaultOpen} rowRef={rowRef} rowData={rowData} rowIndex={rowIndex}>
             {({ open, handleRowClick }) => <>
-                <TableRow onClick={handleRowClick} ref={rowRef} rowData={rowData} rowIndex={rowIndex} type={TRowTypeEnum.body}>
+                <TableRow onClick={(e) => {
+                    console.log(e, "e-- row")
+                    handleRowClick(e)
+                }} ref={rowRef} rowData={rowData} rowIndex={rowIndex} type={TRowTypeEnum.body}>
                     {columns.map((column, columnIndex) => (
                         <Cell key={`${columnIndex}-${rowIndex}`} {...column as any} rowIndex={rowIndex} columnIndex={columnIndex} />
                     ))}
@@ -111,6 +114,7 @@ const Cell: TCellProps<unknown> = (props) => {
                     key={columnIndex}
                     {...props}
                     onClick={e => {
+                        console.log(e, "e-- cell")
                         handleCellClick(e)
                         props.onClick && props.onClick(e)
                     }}

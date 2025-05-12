@@ -33,6 +33,7 @@ export default function TableRowProvider<P = unknown, D = any>({ children, open:
     const [open, setOpen] = useState<boolean>(openDefault);
 
     const handleRowClick: React.MouseEventHandler<HTMLTableRowElement> = (event) => {
+        console.log(event, "----handleRowClick")
         table.onRowClick && table.onRowClick({ ...event, ...value })
     }
 
