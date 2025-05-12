@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react"
 import { useBgsTable } from "../contexts/Table.context"
 import { THeadProps, TRowTypeEnum } from "../types"
+import TableColumnHeadProvider from "../contexts/THead.context"
 
 export default function THead() {
     const {
@@ -83,8 +84,10 @@ const Cell: THeadProps<unknown> = (props) => {
     }, [sticky, rowIndex, tableRef.current, children, columnIndex]);
 
     return <>
-        <TableHead {...props} ref={columnRef} data-sticky={sticky}>
-            {caption}
-        </TableHead>
+        <TableColumnHeadProvider {...props} columnIndex={columnIndex} columnRef={columnRef} rowIndex={rowIndex}>
+            <TableHead {...props} ref={columnRef} data-sticky={sticky}>
+                {caption}
+            </TableHead>
+        </TableColumnHeadProvider>
     </>
 }

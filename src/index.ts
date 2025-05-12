@@ -17,5 +17,6 @@ export { useBgsCore, BgsCoreProvider, type BgsCoreProps } from "./contexts/BgsCo
 export { useBgsTable, type BgsTableRef } from "./contexts/Table.context";
 export { useBgsTableRow } from "./contexts/TRow.context";
 export { useBgsTableColumn } from "./contexts/TCell.context";
+export { useBgsTableColumnHead } from "./contexts/THead.context";
 export * from "./components/Highlight";
 
