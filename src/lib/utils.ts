@@ -1,4 +1,4 @@
-import { Children } from "../types";
+import { Children, NestedKeyOf } from "../types";
 import React, { PropsWithChildren } from "react";
 import { ColumnGroupProps, ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
 
@@ -11,7 +11,7 @@ export function diffJson(data1: any, data2: any) {
     try {
         return JSON.stringify(data1) !== JSON.stringify(data2);
     } catch (error) {
-        return false;        
+        return false;
     }
 }
 
@@ -304,4 +304,57 @@ export const getFieldValue = (arr: any, str: any, defaultValue: any = null): any
     if (!arr) return "";
     if (str.includes(".")) return getFieldValue(arr[str.substring(0, str.indexOf("."))], str.substring(str.indexOf(".") + 1));
     return arr ? arr[str] : defaultValue;
+}
+
+
+export const sorting = {
+    desc: <T,>(data: T[], field?: NestedKeyOf<T>): T[] => {
+        if (!data) data = [];
+        return data.sort((a: any, b: any) => {
+            if (field) {
+                const a1 = getFieldValue(a, field) ? getFieldValue(a, field) : "";
+                const b1 = getFieldValue(b, field) ? getFieldValue(a, field) : "";
+                return a1 < b1 ? 1 : -1;
+            }
+            else {
+                return a < b ? 1 : -1;
+            }
+        });
+    },
+    asc: <T,>(data: T[], field?: NestedKeyOf<T>): T[] => {
+        if (!data) data = [];
+        return data.sort((a: any, b: any) => {
+            if (field) {
+                const a1 = getFieldValue(a, field) ? getFieldValue(a, field) : "";
+                const b1 = getFieldValue(b, field) ? getFieldValue(b, field) : "";
+                return a1 > b1 ? 1 : -1;
+            }
+            else {
+                return a > b ? 1 : -1;
+            }
+        })
+    }
+}
+
+export const summary = <T,>(data: T[], field?: NestedKeyOf<T>): number => {
+    if (!Array.isArray(data)) data = [];
+
+    let dataMapAccumulation: number[] = [];
+
+    dataMapAccumulation = data.map(item => field ? Number(getFieldValue(item, field) || 0) : Number(item || 0));
+
+    return dataMapAccumulation.reduce((total, num) => {
+        return (total || 0) + (num || 0);
+    }, 0) || 0;
+}
+
+export function jsonCopy<T,>(data: T): T {
+    try {
+
+        if (data) return JSON.parse(JSON.stringify(data));
+
+        return data
+    } catch (error) {
+        return data;
+    }
 }

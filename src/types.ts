@@ -1,6 +1,5 @@
 import moment from "moment";
 import { AxiosProgressEvent, AxiosResponse, GenericAbortSignal } from "axios";
-import { ReactNode } from "react";
 
 export type Children<T = unknown> = ChildFunction<T> | React.ReactNode;
 type ChildFunction<T = unknown> = (props: T) => Children<T>;
@@ -146,8 +145,9 @@ export type NestedKeyOf<T> = T extends object
     }[keyof T]
     : never;
 
-
 export type DataType = "number" | "date" | "dateTime" | "month" | "year" | "time" | "string" | "boolean";
+export enum DataTypeEnum { number = "number", date = "date", dateTime = "dateTime", month = "month", year = "year", time = "time", string = "string", boolean = "boolean" };
+
 
 export type PathValue<T, P extends string> =
     P extends `${infer Key}.${infer Rest}`
@@ -281,8 +281,8 @@ export type FooterProps<T = unknown> = Omit<React.ComponentProps<"td">, "colSpan
     sticky?: "left" | "right";
     children?: React.ReactNode;
     dataField?: string;
-    prefix?: ReactNode;
-    suffix?: ReactNode;
+    prefix?: React.ReactNode;
+    suffix?: React.ReactNode;
     type?: FooterType;
     colSpan?: true | number;
 } 

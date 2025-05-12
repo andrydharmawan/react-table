@@ -15,7 +15,7 @@ export function useBgsTableColumn<P = unknown, D = any, K extends NestedKeyOf<D>
         return {} as TableCellReturnData<P, D, K>;
     }
 
-    if (dataField) context.value = getFieldValue(context.rowData, dataField)
+    if (dataField) context.value = getFieldValue(context.rowData, dataField)//sama bgttt - TBody.tsx
 
     return context as TableCellReturnData<P, D, K>;
 }

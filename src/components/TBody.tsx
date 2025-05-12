@@ -96,7 +96,7 @@ const Cell: TCellProps<unknown> = (props) => {
         };
     }, [sticky, rowIndex, tableRef.current, children, rowRef.current, columnRef.current]);
 
-    const value = dataField && getFieldValue(rowData, dataField);
+    const value = dataField && getFieldValue(rowData, dataField);//sama bgttt - TCell.context.tsx
 
     return <>
         <TableCellProvider key={columnIndex} columnRef={columnRef} column={props} columnIndex={columnIndex} value={value} rowIndex={rowIndex} rowData={rowData}>
