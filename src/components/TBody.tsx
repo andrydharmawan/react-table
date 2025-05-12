@@ -4,6 +4,7 @@ import { TCellProps, TCellTypeEnum, TRowProps, TRowTypeEnum } from "../types"
 import TableRowProvider, { useBgsTableRow } from "../contexts/TRow.context"
 import { renderChildren, getFieldValue } from "../lib/utils"
 import TableCellProvider from "../contexts/TCell.context"
+import { useFormatted } from "../hooks/use-formatted"
 
 export default function TBody() {
     const {
@@ -52,7 +53,7 @@ const Cell: TCellProps<unknown> = (props) => {
     const columnRef = useRef<HTMLTableCellElement>(null)
     const { rowData, rowRef } = useBgsTableRow()
 
-    let { sticky, dataField, rowIndex, columnIndex } = props;
+    let { sticky, dataField, rowIndex, columnIndex, dataType } = props;
 
     const {
         TableCell,
@@ -96,7 +97,11 @@ const Cell: TCellProps<unknown> = (props) => {
         };
     }, [sticky, rowIndex, tableRef.current, children, rowRef.current, columnRef.current]);
 
-    const value = dataField && getFieldValue(rowData, dataField);//sama bgttt - TCell.context.tsx
+    let value = dataField && getFieldValue(rowData, dataField);//sama bgttt - TCell.context.tsx
+
+    if(value && dataType){
+        value = useFormatted(value, dataType)
+    }
 
     return <>
         <TableCellProvider key={columnIndex} columnRef={columnRef} column={props} columnIndex={columnIndex} value={value} rowIndex={rowIndex} rowData={rowData}>

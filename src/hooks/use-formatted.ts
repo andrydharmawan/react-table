@@ -1,12 +1,16 @@
 import moment from "moment";
 import { isNotEmpty } from "../lib/utils";
 import { DataType, DataTypeEnum } from "../types";
+import { useBgsCore } from "../contexts/BgsCore.context";
 
-type OptionsNumber = {
-    dataType: "number";
+export type OptionsNumberProps = {
     thouSep: string;
     decSep: string;
     decDigits: number | "auto";
+}
+
+type OptionsNumber = OptionsNumberProps & {
+    dataType: "number";
     method?: "round" | "ceil" | "floor";
 }
 
@@ -23,12 +27,22 @@ export const useFormatted = <T extends DataType>(
     dataType: T,
     options?: UseFormattedOptions<T>
 ): string => {
+    const { format } = useBgsCore()
     if (dataType === DataTypeEnum.number) {
-        const result = formatNumber(value, options as OptionsNumber)
+        const result = formatNumber(value, {
+            thouSep: format.number.thouSep,
+            decDigits: format.number.decDigits,
+            decSep: format.number.decSep,
+            ...options
+        } as OptionsNumber)
         return result
     }
     else if (["date", "dateTime", "month", "year", "time"].some(x => x === dataType)) {
-        return formatDate(value as string, options as OptionsDate);
+        return formatDate(value as string, {
+            display: (format as any)[dataType]?.display,
+            value: (format as any)[dataType]?.value,
+            ...options
+        } as OptionsDate);
     }
     else {
         return value?.toString() as string
