@@ -72,6 +72,7 @@ export const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequ
             data,
             headers,
             responseType: opts.responseType,
+            signal: opts.signal,
             onUploadProgress: e => {
                 if (opts?.onUploadProgress) opts?.onUploadProgress(e)
             },
