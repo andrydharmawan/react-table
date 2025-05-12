@@ -1,0 +1,57 @@
+import { createContext, forwardRef, PropsWithChildren, ReactNode, useContext, useImperativeHandle } from "react";
+import { BgsTableProps } from "../components/Table";
+import { buildHeaderLevels, flattenColumns, parseColumns, parseFooter, parseMasterDetail } from "../lib/utils";
+import { ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
+
+export interface BgsTableContextData<T = any> extends BgsTableProps<T> {
+    tableRef: React.RefObject<HTMLTableElement | null>;
+    child: ReactNode;
+}
+
+export interface BgsTableRef<P = unknown, D = any> extends BgsTableProps<D> {
+    columnsProps: ColumnMapping[];
+    headers: HeaderLevel[][]
+    footers: FooterProps[][];
+    columns: ColumnProps<P, D>[];
+    children: ReactNode;
+    tableRef: React.RefObject<HTMLTableElement | null>;
+    masterDetail: MasterDetailProps<P, D> | undefined;
+}
+
+const BgsTableContext = createContext<BgsTableRef | undefined>(undefined);
+
+export function useBgsTable<P = unknown, D = any>(): BgsTableRef<P, D> {
+    const context = useContext(BgsTableContext);
+    if (!context) {
+        return {} as BgsTableRef<P, D>;
+    }
+    return context as BgsTableRef<P, D>;
+}
+
+type BgsTableProviderType = <T, >(props: PropsWithChildren<BgsTableContextData<T>> & { ref?: React.ForwardedRef<BgsTableRef> }) => any;
+
+const BgsTableProvider: BgsTableProviderType = forwardRef(({ children, child, ...others }, ref) => {
+    const columnsProps = parseColumns(child);
+    const headers = buildHeaderLevels(columnsProps);
+    const columns = flattenColumns(columnsProps);
+    const masterDetail = parseMasterDetail(child)
+    const footers = parseFooter(child)
+
+    const value: BgsTableRef = {
+        ...others,
+        columnsProps,
+        headers,
+        columns,
+        children: child,
+        masterDetail,
+        footers,
+    }
+
+    useImperativeHandle(ref, () => value);
+
+    return <BgsTableContext.Provider value={value}>
+        {children}
+    </BgsTableContext.Provider>
+})
+
+export default BgsTableProvider
