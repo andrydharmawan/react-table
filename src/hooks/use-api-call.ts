@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { isNotEmpty } from "../lib/utils";
 import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCallOptionsProps } from "../types";
 
-export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, options?: Partial<UseCallOptionsProps<DReq, DRes>>): UseCallReturnType<DRes> => {
+export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, options?: Partial<UseCallOptionsProps<DReq, DRes>>): UseCallReturnType<DRes> => {
     const [loading, setLoading] = useState<boolean>(false)
     const [response, setResponse] = useState<ApiResponse<DRes> | undefined | null>()
     const prevDataRef = useRef<DReq | undefined>(undefined);
@@ -20,7 +20,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
             prevDataRef.current = data;
         }
 
-        options?.onChange && options?.onChange(data, resultOptions)
+        options?.onChange && options?.onChange(data!, resultOptions)
     }, [data, options?.hold, ...(options?.trigger || [])])
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
         }
 
         if (options?.beforeRequest) {
-            data = options?.beforeRequest(data)
+            data = options?.beforeRequest(data!)
         }
 
         const key = JSON.stringify(data || "null");
@@ -54,7 +54,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
             setLoading(true)
 
             if (options?.onBeforeRequest) {
-                options?.onBeforeRequest(data)
+                options?.onBeforeRequest(data!)
             }
 
             const cache = await caches.open(options.cache.key);
@@ -100,10 +100,10 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data: DReq, o
             }
 
             if (options?.onBeforeRequest) {
-                options?.onBeforeRequest(data)
+                options?.onBeforeRequest(data!)
             }
 
-            const res = await api(data, undefined, { ...options, signal: controller.signal })
+            const res = await api(data!, undefined, { ...options, signal: controller.signal })
 
             if (options?.afterResponse && res?.data) res.data = options?.afterResponse(res.data)
 
