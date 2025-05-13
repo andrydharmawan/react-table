@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useLayoutEffect, useRef } from "react"
 import { useBgsTable } from "../contexts/Table.context"
 import { ColumunFooterProps, FooterProps, TCellTypeEnum, TRowProps, TRowTypeEnum } from "../types"
 
@@ -51,7 +51,7 @@ const Cell: ColumunFooterProps<{
 
     if (typeof colSpan === "boolean" && colSpan) colSpan = columnsWithChild.length;
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const handleResize = () => {
             const current = columnRef.current;
             if (!current || !sticky) return;
@@ -82,7 +82,17 @@ const Cell: ColumunFooterProps<{
         window.addEventListener("resize", handleResize);
         handleResize();
 
+        const colGroup = tableRef.current?.querySelector("colgroup");
+        const cols = colGroup ? Array.from(colGroup.children) : [];
+
+        const resizeObserver = new ResizeObserver(() => {
+            handleResize();
+        });
+
+        cols.forEach(col => resizeObserver.observe(col));
+
         return () => {
+            resizeObserver.disconnect();
             window.removeEventListener("resize", handleResize);
         };
     }, [sticky, rowIndex, tableRef.current, children, rowRef.current, columnRef.current]);

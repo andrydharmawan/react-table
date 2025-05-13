@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useLayoutEffect, useRef } from "react"
 import { useBgsTable } from "../contexts/Table.context"
 import { TCellProps, TCellTypeEnum, TRowProps, TRowTypeEnum } from "../types"
 import TableRowProvider, { useBgsTableRow } from "../contexts/TRow.context"
@@ -63,7 +63,7 @@ const Cell: TCellProps<unknown> = (props) => {
         children,
     } = useBgsTable();
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const handleResize = () => {
             const current = columnRef.current;
             if (!current || !sticky) return;
@@ -94,13 +94,14 @@ const Cell: TCellProps<unknown> = (props) => {
         window.addEventListener("resize", handleResize);
         handleResize();
 
-        const col = tableRef.current?.querySelector("colgroup")?.children[columnIndex];
+        const colGroup = tableRef.current?.querySelector("colgroup");
+        const cols = colGroup ? Array.from(colGroup.children) : [];
 
         const resizeObserver = new ResizeObserver(() => {
             handleResize();
         });
 
-        col && resizeObserver.observe(col);
+        cols.forEach(col => resizeObserver.observe(col));
 
         return () => {
             resizeObserver.disconnect();
