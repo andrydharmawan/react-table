@@ -1,6 +1,5 @@
 import { createContext, PropsWithChildren, useContext } from "react";
 import { OptionsNumberProps } from "../hooks/use-formatted";
-import { TableProps, TBodyProps, TCellProps, TFooterProps, THeaderProps, THeadProps, TRowProps } from "../types";
 
 type FormatType = { display: string; value: string; }
 
@@ -15,13 +14,6 @@ type FormatContextProps = {
 
 export type BgsCoreProps = {
     format: FormatContextProps;
-    Table: TableProps;
-    TableHeader: THeaderProps;
-    TableBody: TBodyProps;
-    TableFooter: TFooterProps;
-    TableRow: TRowProps;
-    TableHead: THeadProps<any>;
-    TableCell: TCellProps<unknown>;
 }
 
 const BgsCoreContext = createContext<BgsCoreProps | undefined>(undefined);
