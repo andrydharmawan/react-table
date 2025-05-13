@@ -13,6 +13,7 @@ export interface BgsTableRef<P = unknown, D = any> extends BgsTableProps<P, D>, 
     columnsProps: ColumnMapping[];
     headers: HeaderLevel[][]
     footers: FooterProps[][];
+    columnsWithChild: ColumnProps<P, D>[];
     columns: ColumnProps<P, D>[];
     children: ReactNode;
     tableRef: React.RefObject<HTMLTableElement | null>;
@@ -35,7 +36,8 @@ const BgsTableProvider: BgsTableProviderType = forwardRef(({ children, child, ..
     const bgsCore = useBgsCore()
     const columnsProps = useMemo(() => parseColumns(child), [child]);
     const headers = useMemo(() => buildHeaderLevels(columnsProps), [columnsProps]);
-    const columns = useMemo(() => flattenColumns(columnsProps), [columnsProps]);
+    const columnsWithChild = useMemo(() => flattenColumns(columnsProps), [columnsProps]);
+    const columns = useMemo(() => columnsWithChild.map(({ children, ...others }) => others), [columnsWithChild]);
     const masterDetail = useMemo(() => parseMasterDetail(child), [child])
     const footers = useMemo(() => parseFooter(child), [child])
 
@@ -44,6 +46,7 @@ const BgsTableProvider: BgsTableProviderType = forwardRef(({ children, child, ..
         ...bgsCore,
         columnsProps,
         headers,
+        columnsWithChild,
         columns,
         children: child,
         masterDetail,

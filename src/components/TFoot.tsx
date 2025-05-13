@@ -46,10 +46,10 @@ const Cell: ColumunFooterProps<{
         TableCell,
         tableRef,
         children,
-        columns,
+        columnsWithChild,
     } = useBgsTable();
 
-    if (typeof colSpan === "boolean" && colSpan) colSpan = columns.length;
+    if (typeof colSpan === "boolean" && colSpan) colSpan = columnsWithChild.length;
 
     useEffect(() => {
         const handleResize = () => {

@@ -27,7 +27,7 @@ const Row: TRowProps = ({ rowIndex, rowData }) => {
     const {
         TableRow,
         TableCell,
-        columns,
+        columnsWithChild,
         masterDetail,
     } = useBgsTable<any[]>();
 
@@ -37,12 +37,12 @@ const Row: TRowProps = ({ rowIndex, rowData }) => {
                 <TableRow onClick={(e) => {
                     handleRowClick(e)
                 }} ref={rowRef} rowData={rowData} rowIndex={rowIndex} type={TRowTypeEnum.body}>
-                    {columns.map((column, columnIndex) => (
+                    {columnsWithChild.map((column, columnIndex) => (
                         <Cell key={`${columnIndex}-${rowIndex}`} {...column as any} rowIndex={rowIndex} columnIndex={columnIndex} />
                     ))}
                 </TableRow>
                 {open && <TableRow rowIndex={rowIndex} type={TRowTypeEnum.masterDetail}>
-                    <TableCell rowIndex={rowIndex} columnIndex={0} className={masterDetail?.className} colSpan={columns.length} type={TCellTypeEnum.masterDetail}>
+                    <TableCell rowIndex={rowIndex} columnIndex={0} className={masterDetail?.className} colSpan={columnsWithChild.length} type={TCellTypeEnum.masterDetail}>
                         {renderChildren(masterDetail?.children as any, { rowData, rowIndex })}
                     </TableCell>
                 </TableRow>}

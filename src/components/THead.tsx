@@ -7,13 +7,13 @@ export default function THead() {
     const {
         TableHeader,
         TableRow,
-        columns,
+        columnsWithChild,
         headers,
     } = useBgsTable()
 
     return <>
         <colgroup>
-            {columns.map(({ width }, index) => <col key={index} style={width ? { width } : {}} />)}
+            {columnsWithChild.map(({ width }, index) => <col key={index} style={width ? { width } : {}} />)}
         </colgroup>
         <TableHeader>
             {headers.map((level, levelIndex) => (
