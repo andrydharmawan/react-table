@@ -1,15 +1,15 @@
 import { createContext, forwardRef, PropsWithChildren, ReactNode, useContext, useImperativeHandle, useMemo } from "react";
-import { BgsTableProps } from "../components/Table";
+import { BgsTableDefaultProps } from "../components/Table";
 import { buildHeaderLevels, flattenColumns, parseColumns, parseFooter, parseMasterDetail } from "../lib/utils";
 import { ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
 import { BgsCoreProps, useBgsCore } from "./BgsCore.context";
 
-export interface BgsTableContextData<P = unknown, D = any> extends BgsTableProps<P, D> {
+export interface BgsTableContextData<P = unknown, D = any> extends BgsTableDefaultProps<P, D> {
     tableRef: React.RefObject<HTMLTableElement | null>;
     child: ReactNode;
 }
 
-export interface BgsTableRef<P = unknown, D = any> extends BgsTableProps<P, D>, BgsCoreProps {
+export interface BgsTableRef<P = unknown, D = any> extends BgsTableDefaultProps<P, D>, BgsCoreProps {
     columnsProps: ColumnMapping[];
     headers: HeaderLevel[][]
     footers: FooterProps[][];

@@ -5,11 +5,10 @@ import BgsTableProvider, { BgsTableRef } from "../contexts/Table.context";
 import THead from "./THead";
 import TBody from "./TBody";
 import TFoot from "./TFoot";
-import { useBgsCore } from "../contexts/BgsCore.context";
 import { TableRowReturnData } from "../contexts/TRow.context";
 import { TableCellReturnData } from "../contexts/TCell.context";
 
-export interface BgsTableProps<P = unknown, D = any> {
+export interface BgsTableDefaultProps<P = unknown, D = any> {
     dataSource: D;
     onRowClick?: (props: TableRowReturnData<P, ElementType<D>> & { event: React.MouseEvent<HTMLTableRowElement, MouseEvent> }) => void;
     onCellClick?: (props: TableCellReturnData<P, ElementType<D>> & { event: React.MouseEvent<HTMLTableCellElement, MouseEvent> }) => void;
@@ -22,8 +21,8 @@ export interface BgsTableProps<P = unknown, D = any> {
     TableCell: TCellProps<unknown>;
 }
 
-type BgsTableType = <P = unknown, D = any>(props: PropsWithChildren<BgsTableProps<P, D>> & { ref?: React.ForwardedRef<BgsTableRef<P, D>> }) => any;
-
+type BgsTableType = <P = unknown, D = any>(props: PropsWithChildren<BgsTableDefaultProps<P, D>> & { ref?: React.ForwardedRef<BgsTableRef<P, D>> }) => any;
+ 
 const BgsTable: BgsTableType = React.forwardRef((props, ref) => {
     const tableRef = useRef<HTMLTableElement>(null)
     const table = useRef<BgsTableRef<any>>(null)
@@ -34,7 +33,7 @@ const BgsTable: BgsTableType = React.forwardRef((props, ref) => {
     } = props;
 
     useImperativeHandle(ref, () => table.current!);
-    
+
     return <>
         <BgsTableProvider {...props} child={children} tableRef={tableRef} ref={table}>
             <Table ref={tableRef}>

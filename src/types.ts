@@ -1,5 +1,8 @@
 import moment from "moment";
 import { AxiosProgressEvent, AxiosResponse, GenericAbortSignal } from "axios";
+import { PropsWithChildren } from "react";
+import { BgsTableDefaultProps } from "./components/Table";
+import { BgsTableRef } from "./contexts/Table.context";
 
 export type Children<T = unknown> = ChildFunction<T> | React.ReactNode;
 type ChildFunction<T = unknown> = (props: T) => Children<T>;
@@ -291,3 +294,5 @@ export type FooterProps<T = unknown> = Omit<React.ComponentProps<"td">, "colSpan
 }
 
 export type ElementType<T> = T extends (infer U)[] ? U : T;
+
+export type BgsTableProps = <P = unknown, D = any>(props: PropsWithChildren<Omit<BgsTableDefaultProps<P, D>, "Table" | "TableBody" | "TableCell" | "TableFooter" | "TableHead" | "TableHeader" | "TableRow">> & { ref?: React.ForwardedRef<BgsTableRef<P, D>> }) => any;
