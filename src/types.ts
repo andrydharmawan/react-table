@@ -295,4 +295,5 @@ export type FooterProps<T = unknown> = Omit<React.ComponentProps<"td">, "colSpan
 
 export type ElementType<T> = T extends (infer U)[] ? U : T;
 
-export type BgsTableProps = <P = unknown, D = any>(props: PropsWithChildren<Omit<BgsTableDefaultProps<P, D>, "Table" | "TableBody" | "TableCell" | "TableFooter" | "TableHead" | "TableHeader" | "TableRow">> & { ref?: React.ForwardedRef<BgsTableRef<P, D>> }) => any;
+export type BgsTableProps<P = unknown, D = any> = Omit<BgsTableDefaultProps<P, D>, "Table" | "TableBody" | "TableCell" | "TableFooter" | "TableHead" | "TableHeader" | "TableRow">;
+export type BgsTableComponent = <P = unknown, D = any>(props: PropsWithChildren<BgsTableProps<P, D>> & { ref?: React.ForwardedRef<BgsTableRef<P, D>> }) => any;
