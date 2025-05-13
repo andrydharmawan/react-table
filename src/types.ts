@@ -21,7 +21,7 @@ export interface ApiResponse<T = any> {
 
 export type CallbackHelper<T = any> = ((response: ApiResponse<T>) => (void | ApiResponse<T>))
 
-type HandleCallback<T = any> = (props: AxiosResponse<T>, err?: any) => ApiResponse;
+type HandleCallback<T = any> = (props: AxiosResponse<T> & { isCancel: boolean; }, err?: any) => ApiResponse;
 
 export interface UseHelperProps {
     url: string;
@@ -32,6 +32,7 @@ export interface UseHelperProps {
     handleAuthorization?: (response: ApiResponse, options?: OptionsHelper) => boolean;
     handleToast?: (response: ApiResponse) => void;
     beforeRequest?: (data: any) => any;
+    disabledToastWhenCancel?: boolean;
 }
 
 export interface OptionsHelper {
@@ -44,6 +45,7 @@ export interface OptionsHelper {
     onUploadProgress: (props: AxiosProgressEvent) => void;
     onUnauthorized: (response: ApiResponse) => void;
     disabledHandleUnauthorized: boolean;
+    disabledToastWhenCancel?: boolean;
 }
 
 export type ClientCallback<T> = (response: AxiosResponse<T>, err?: any) => any;
