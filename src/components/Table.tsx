@@ -20,7 +20,9 @@ type BgsTableType = <P = unknown, D = any>(props: PropsWithChildren<BgsTableProp
 const BgsTable: BgsTableType = React.forwardRef((props, ref) => {
     const tableRef = useRef<HTMLTableElement>(null)
     const table = useRef<BgsTableRef<any>>(null)
-    const { Table } = useBgsCore()
+    const { componentTable } = useBgsCore()
+
+    const Table = componentTable().Table
 
     const {
         children,

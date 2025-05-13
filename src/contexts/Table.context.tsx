@@ -2,14 +2,14 @@ import { createContext, forwardRef, PropsWithChildren, ReactNode, useContext, us
 import { BgsTableProps } from "../components/Table";
 import { buildHeaderLevels, flattenColumns, parseColumns, parseFooter, parseMasterDetail } from "../lib/utils";
 import { ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
-import { BgsCoreProps, useBgsCore } from "./BgsCore.context";
+import { BgsCoreProps, ComponentTable, useBgsCore } from "./BgsCore.context";
 
 export interface BgsTableContextData<P = unknown, D = any> extends BgsTableProps<P, D> {
     tableRef: React.RefObject<HTMLTableElement | null>;
     child: ReactNode;
 }
 
-export interface BgsTableRef<P = unknown, D = any> extends BgsTableProps<P, D>, BgsCoreProps {
+export interface BgsTableRef<P = unknown, D = any> extends BgsTableProps<P, D>, Omit<BgsCoreProps, "componentTable">, ComponentTable {
     columnsProps: ColumnMapping[];
     headers: HeaderLevel[][]
     footers: FooterProps[][];
@@ -33,7 +33,7 @@ export function useBgsTable<P = unknown, D = any>(): BgsTableRef<P, D> {
 type BgsTableProviderType = <P = unknown, D = any>(props: PropsWithChildren<BgsTableContextData<P, D>> & { ref?: React.ForwardedRef<BgsTableRef> }) => any;
 
 const BgsTableProvider: BgsTableProviderType = forwardRef(({ children, child, ...others }, ref) => {
-    const bgsCore = useBgsCore()
+    const { format, componentTable } = useBgsCore()
     const columnsProps = useMemo(() => parseColumns(child), [child]);
     const headers = useMemo(() => buildHeaderLevels(columnsProps), [columnsProps]);
     const columnsWithChild = useMemo(() => flattenColumns(columnsProps), [columnsProps]);
@@ -41,9 +41,12 @@ const BgsTableProvider: BgsTableProviderType = forwardRef(({ children, child, ..
     const masterDetail = useMemo(() => parseMasterDetail(child), [child])
     const footers = useMemo(() => parseFooter(child), [child])
 
+    const component = componentTable()
+
     const value: BgsTableRef<any> = {
         ...others,
-        ...bgsCore,
+        ...component,
+        format,
         columnsProps,
         headers,
         columnsWithChild,

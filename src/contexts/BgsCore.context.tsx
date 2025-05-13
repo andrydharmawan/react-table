@@ -2,9 +2,9 @@ import { createContext, PropsWithChildren, useContext } from "react";
 import { OptionsNumberProps } from "../hooks/use-formatted";
 import { TableProps, TBodyProps, TCellProps, TFooterProps, THeaderProps, THeadProps, TRowProps } from "../types";
 
-type FormatType = { display: string; value: string; }
+export type FormatType = { display: string; value: string; }
 
-type FormatContextProps = {
+export type FormatContextProps = {
     date: FormatType;
     month: FormatType;
     year: FormatType;
@@ -13,8 +13,7 @@ type FormatContextProps = {
     number: OptionsNumberProps;
 }
 
-export type BgsCoreProps = {
-    format: FormatContextProps;
+export type ComponentTable = {
     Table: TableProps;
     TableHeader: THeaderProps;
     TableBody: TBodyProps;
@@ -22,6 +21,11 @@ export type BgsCoreProps = {
     TableRow: TRowProps;
     TableHead: THeadProps<any>;
     TableCell: TCellProps<unknown>;
+}
+
+export interface BgsCoreProps {
+    format: FormatContextProps;
+    componentTable: () => ComponentTable;
 }
 
 const BgsCoreContext = createContext<BgsCoreProps | undefined>(undefined);
@@ -34,15 +38,7 @@ export function useBgsCore(): BgsCoreProps {
     return context;
 }
 
-interface BgsCoreProviderProps {
-    value: BgsCoreProps;
-}
-
-export const BgsCoreProvider = ({ children, value: options }: PropsWithChildren<BgsCoreProviderProps>) => {
-    const value: BgsCoreProps = {
-        ...options,
-    }
-
+export const BgsCoreProvider = ({ children, ...value }: PropsWithChildren<BgsCoreProps>) => {
     return <BgsCoreContext.Provider value={value}>
         {children}
     </BgsCoreContext.Provider>
