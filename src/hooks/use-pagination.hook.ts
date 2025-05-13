@@ -23,7 +23,17 @@ export interface UsePaginationProps {
     showLastButton?: boolean;
     /** Number of always visible pages before and after the current page. */
     siblingCount?: number;
+
+    component?: UsePaginationComponents;
 }
+
+export type UsePaginationComponents = {
+    ellipsis: (item: UsePaginationItem, index:number) => React.ReactNode;
+    page: (item: UsePaginationItem, index:number) => React.ReactNode;
+    previous: (item: UsePaginationItem, index:number) => React.ReactNode;
+    next: (item: UsePaginationItem, index:number) => React.ReactNode;
+    others: (item: UsePaginationItem, index:number) => React.ReactNode;
+};
 
 export type UsePaginationItemType =
     | "page"
@@ -34,6 +44,15 @@ export type UsePaginationItemType =
     | "start-ellipsis"
     | "end-ellipsis";
 
+export enum UsePaginationItemTypeEnum {
+    page = "page",
+    first = "first",
+    last = "last",
+    next = "next",
+    previous = "previous",
+    startEllipsis = "start-ellipsis",
+    endEllipsis = "end-ellipsis"
+}
 export interface UsePaginationItem {
     onClick: (event: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>) => void;
     type: UsePaginationItemType;
@@ -45,6 +64,7 @@ export interface UsePaginationItem {
 
 export interface UsePaginationResult {
     items: UsePaginationItem[];
+    components: React.ReactNode[];
 }
 
 export function usePagination(
@@ -172,6 +192,23 @@ export function usePagination(
                     (type === "next" || type === "last" ? page >= count : page <= 1)),
         };
     });
+    const components = items.map((item, index) => {
+        if ([UsePaginationItemTypeEnum.startEllipsis, UsePaginationItemTypeEnum.endEllipsis].some(x => x === item.type)) {
+            return props.component?.ellipsis(item, index)
+        }
+        else if (UsePaginationItemTypeEnum.page === item.type) {
+            return props.component?.page(item, index)
+        }
+        else if (UsePaginationItemTypeEnum.previous === item.type) {
+            return props.component?.previous(item, index)
+        }
+        else if (UsePaginationItemTypeEnum.next === item.type) {
+            return props.component?.next(item, index)
+        }
+        else {
+            return props.component?.others(item, index)
+        }
+    });
 
-    return { items };
+    return { items, components };
 }
