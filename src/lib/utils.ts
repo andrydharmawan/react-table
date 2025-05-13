@@ -252,7 +252,7 @@ export const flattenColumns = (columns: ColumnMapping[]): ColumnProps[] => {
         col.subColumns?.length
             ? flattenColumns(col.subColumns)
             : [col]
-    )?.map(({ children, ...others }) => others);
+    );
 };
 
 

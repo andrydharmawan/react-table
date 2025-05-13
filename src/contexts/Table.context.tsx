@@ -1,4 +1,4 @@
-import { createContext, forwardRef, PropsWithChildren, ReactNode, useContext, useImperativeHandle } from "react";
+import { createContext, forwardRef, PropsWithChildren, ReactNode, useContext, useImperativeHandle, useMemo } from "react";
 import { BgsTableProps } from "../components/Table";
 import { buildHeaderLevels, flattenColumns, parseColumns, parseFooter, parseMasterDetail } from "../lib/utils";
 import { ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
@@ -32,12 +32,12 @@ export function useBgsTable<P = unknown, D = any>(): BgsTableRef<P, D> {
 type BgsTableProviderType = <P = unknown, D = any>(props: PropsWithChildren<BgsTableContextData<P, D>> & { ref?: React.ForwardedRef<BgsTableRef> }) => any;
 
 const BgsTableProvider: BgsTableProviderType = forwardRef(({ children, child, ...others }, ref) => {
-    const columnsProps = parseColumns(child);
-    const headers = buildHeaderLevels(columnsProps);
-    const columns = flattenColumns(columnsProps);
-    const masterDetail = parseMasterDetail(child)
-    const footers = parseFooter(child)
     const bgsCore = useBgsCore()
+    const columnsProps = useMemo(() => parseColumns(child), [child]);
+    const headers = useMemo(() => buildHeaderLevels(columnsProps), [columnsProps]);
+    const columns = useMemo(() => flattenColumns(columnsProps), [columnsProps]);
+    const masterDetail = useMemo(() => parseMasterDetail(child), [child])
+    const footers = useMemo(() => parseFooter(child), [child])
 
     const value: BgsTableRef<any> = {
         ...others,
