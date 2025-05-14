@@ -24,19 +24,31 @@ export const splitElement = <T extends string>(
     elementNames: T[]
 ): SplitElementResult<T> => {
     const result: SplitElementResult<T> = {} as SplitElementResult<T>;
+    result.others = [];
 
-    React.Children.forEach(children, (child) => {
-        if (React.isValidElement(child) && child.type) {
-            const displayName = (child.type as React.FC).displayName as T;
+    const traverse = (nodes: React.ReactNode) => {
+        React.Children.forEach(nodes, (child) => {
+            if (React.isValidElement(child)) {
+                const displayName = (child.type as React.FC).displayName as T;
 
-            if (elementNames.some(x => x === displayName)) {
-                (result as any)[displayName] = child as React.ReactNode;
+                if (elementNames.includes(displayName)) {
+                    (result as any)[displayName] = child;
+                } else {
+                    const childElement = child as React.ReactElement<any>;
+                    const hasChildren = childElement.props?.children;
+
+                    if (hasChildren) {
+                        traverse(childElement.props.children);
+                    } else {
+                        result.others!.push(child);
+                    }
+                }
             } else {
-                if (!result.others) result.others = [];
-                result.others.push(child);
+                result.others!.push(child);
             }
-        }
-    });
+        });
+    };
 
+    traverse(children);
     return result;
 };
