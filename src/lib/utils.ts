@@ -75,7 +75,7 @@ function isColumn<DRes>(
     return (
         React.isValidElement(element) &&
         typeof element.type === "function" &&
-        (element.type as React.FC).displayName === "Column"
+        (element.type as React.FC).displayName === "Column-0EHliBuh9viM6ZN"
     );
 }
 
@@ -85,7 +85,7 @@ function isColumnGroup(
     return (
         React.isValidElement(element) &&
         typeof element.type === "function" &&
-        (element.type as React.FC).displayName === "ColumnGroup"
+        (element.type as React.FC).displayName === "ColumnGroup-OFC1J5zsEoirK00"
     );
 }
 
@@ -95,7 +95,7 @@ function isMasterDetail(
     return (
         React.isValidElement(element) &&
         typeof element.type === "function" &&
-        (element.type as React.FC).displayName === "MasterDetail"
+        (element.type as React.FC).displayName === "MasterDetail-eYbUPjmfH9DMW98"
     );
 }
 
@@ -105,7 +105,7 @@ function isFooter(
     return (
         React.isValidElement(element) &&
         typeof element.type === "function" &&
-        (element.type as React.FC).displayName === "Footer"
+        (element.type as React.FC).displayName === "Footer-HoCjTyTQB5G7i3b"
     );
 }
 
@@ -115,7 +115,7 @@ function isColumnFooter(
     return (
         React.isValidElement(element) &&
         typeof element.type === "function" &&
-        (element.type as React.FC).displayName === "ColumnFooter"
+        (element.type as React.FC).displayName === "ColumnFooter-jRq86sPBPi3H0Wu"
     );
 }
 
