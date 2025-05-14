@@ -1,6 +1,6 @@
 import { createContext, forwardRef, PropsWithChildren, ReactNode, useContext, useImperativeHandle, useMemo } from "react";
 import { BgsTableDefaultProps } from "../components/Table";
-import { buildHeaderLevels, flattenColumns, parseColumns, parseFooter, parseMasterDetail } from "../lib/utils";
+import { buildHeaderLevels, flattenColumns, parseColumns, parseFooter, parseMasterDetail } from "../lib/utils.internal";
 import { ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
 import { BgsCoreProps, useBgsCore } from "./BgsCore.context";
 

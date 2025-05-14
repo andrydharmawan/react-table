@@ -17,6 +17,7 @@ export * from "./hooks/create-element";
 export * from "./types";
 export * from "./components/Element";
 export * from "./components/ResizeColumn";
+export * from "./lib/utils";
 export { useBgsCore, BgsCoreProvider, type BgsCoreProps } from "./contexts/BgsCore.context";
 export { useBgsTable, type BgsTableRef } from "./contexts/Table.context";
 export { useBgsTableRow } from "./contexts/TRow.context";
