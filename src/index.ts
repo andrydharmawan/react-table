@@ -13,6 +13,7 @@ export * from "./hooks/create-api-helper";
 export * from "./hooks/use-api-action";
 export * from "./hooks/use-scroll.hook";
 export * from "./hooks/use-pagination.hook";
+export * from "./hooks/create-element";
 export * from "./types";
 export * from "./components/Element";
 export * from "./components/ResizeColumn";
