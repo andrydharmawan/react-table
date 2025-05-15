@@ -139,28 +139,42 @@ export type UseApiActionReturnType<Req, Res> = [
     }
 ]
 
-export type NestedKeyOf<T> = T extends object
-    ? T extends any[]
-    ? string
-    : {
-        [K in keyof T]: T[K] extends object
-        ? T[K] extends any[]
-        ? `${K & string}`
-        : `${K & string}` | `${K & string}.${NestedKeyOf<T[K]>}`
-        : `${K & string}`;
-    }[keyof T]
-    : never;
-
 export type DataType = "number" | "date" | "dateTime" | "month" | "year" | "time" | "string" | "boolean";
 export enum DataTypeEnum { number = "number", date = "date", dateTime = "dateTime", month = "month", year = "year", time = "time", string = "string", boolean = "boolean" };
 
 
+export type NestedKeyOf<T> =
+  T extends object
+    ? T extends Array<infer U>
+      ? `${number}` | `${number}.${NestedKeyOf<U>}`
+      : {
+          [K in keyof T]: T[K] extends Array<infer U>
+            ? `${K & string}` | `${K & string}[${number}]` | `${K & string}[${number}].${NestedKeyOf<U>}`
+            : T[K] extends object
+              ? `${K & string}` | `${K & string}.${NestedKeyOf<T[K]>}`
+              : `${K & string}`;
+        }[keyof T]
+    : never;
+
+
 export type PathValue<T, P extends string> =
-    P extends `${infer Key}.${infer Rest}`
-    ? Key extends keyof T
-    ? PathValue<T[Key], Rest>
-    : never
-    : P extends keyof T
+  P extends `${infer K}[${infer I}].${infer R}`
+    ? K extends keyof T
+      ? T[K] extends Array<infer U>
+        ? PathValue<U, R>
+        : never
+      : never
+  : P extends `${infer K}[${infer I}]`
+    ? K extends keyof T
+      ? T[K] extends Array<infer U>
+        ? U
+        : never
+      : never
+  : P extends `${infer K}.${infer R}`
+    ? K extends keyof T
+      ? PathValue<T[K], R>
+      : never
+  : P extends keyof T
     ? T[P]
     : never;
 

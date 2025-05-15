@@ -1,4 +1,4 @@
-import { Children, NestedKeyOf } from "../types";
+import { Children, NestedKeyOf, PathValue } from "../types";
 import React, { PropsWithChildren } from "react";
 import { ColumnGroupProps, ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
 
@@ -113,12 +113,25 @@ export function renderChildren<T = unknown>(children: Children, props: T): any {
     return typeof children === "function" ? children(props) : children;
 };
 
-export const getFieldValue = (arr: any, str: any, defaultValue: any = null): any => {
-    if (!arr) return "";
-    if (str.includes(".")) return getFieldValue(arr[str.substring(0, str.indexOf("."))], str.substring(str.indexOf(".") + 1));
-    return arr ? arr[str] : defaultValue;
-}
+export const getFieldValue = <T, P extends NestedKeyOf<T>, D = undefined>(obj: T, path: P, defaultValue: D = "" as D): PathValue<T, P> | D => {
+    if (!obj) return defaultValue;
 
+    // If the full path is a key in the object, return it directly
+    if (obj.hasOwnProperty(path)) {
+        return (obj as any)[path];
+    }
+
+    // Normal nested access
+    const pathParts = path.replace(/\[(\d+)\]/g, '.$1').split('.');
+    let current = obj;
+
+    for (const part of pathParts) {
+        if (current == null) return defaultValue;
+        current = (current as any)[part];
+    }
+
+    return current === undefined ? defaultValue : current as any;
+}
 
 export const sorting = {
     desc: <T,>(data: T[], field?: NestedKeyOf<T>): T[] => {
@@ -127,7 +140,7 @@ export const sorting = {
             if (field) {
                 const a1 = getFieldValue(a, field) ? getFieldValue(a, field) : "";
                 const b1 = getFieldValue(b, field) ? getFieldValue(a, field) : "";
-                return a1 < b1 ? 1 : -1;
+                return a1! < b1! ? 1 : -1;
             }
             else {
                 return a < b ? 1 : -1;
@@ -140,7 +153,7 @@ export const sorting = {
             if (field) {
                 const a1 = getFieldValue(a, field) ? getFieldValue(a, field) : "";
                 const b1 = getFieldValue(b, field) ? getFieldValue(b, field) : "";
-                return a1 > b1 ? 1 : -1;
+                return a1! > b1! ? 1 : -1;
             }
             else {
                 return a > b ? 1 : -1;
