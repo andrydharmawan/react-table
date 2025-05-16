@@ -76,17 +76,18 @@ export type ResponseType =
     | 'stream'
     | 'formdata';
 
-export type OptionsCallReturn<T> = Partial<ApiResponse<T>> & {
+export type OptionsCallReturn<DReq, DRes = DReq> = Partial<ApiResponse<DRes>> & {
     loading: boolean;
     refresh: () => void;
     abort: () => void;
     clear: () => void;
-    response: ApiResponse<T> | undefined | null
+    response: ApiResponse<DRes> | undefined | null
+    clone: <T = unknown>(newPayload?: DReq, newConfig?: Partial<UseCallOptionsProps<DReq, DRes & T>>) => UseCallReturnType<DReq, DRes>;
 }
 
-export type UseCallReturnType<T> = [
-    T | undefined,
-    OptionsCallReturn<T>
+export type UseCallReturnType<DReq, DRes = DReq> = [
+    DRes | undefined,
+    OptionsCallReturn<DReq, DRes>
 ]
 
 interface TimeoutConfig {
@@ -133,7 +134,7 @@ export interface UseCallOptionsProps<DReq, DRes> extends OptionsHelper {
     onAfterResponse: (response: ApiResponse<DRes>) => void;
     trigger: any[];
     hold: boolean;
-    onChange: (data: DReq, options: OptionsCallReturn<DRes>) => void;
+    onChange: (data: DReq, options: OptionsCallReturn<DReq, DRes>) => void;
     cache: CacheProps;
     refreshInterval: number | TimeoutConfig;
 }
