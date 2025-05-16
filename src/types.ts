@@ -95,8 +95,28 @@ interface TimeoutConfig {
 }
 
 interface CacheProps {
-    key: string;
+    /** 
+     * Nama cache yang akan digunakan sebagai container atau namespace.
+     * Biasanya untuk membedakan jenis cache yang berbeda.
+     */
+    cacheName: string;
+
+    /**
+     * Kunci unik untuk menyimpan dan mengambil data dari cache.
+     * Biasanya merepresentasikan entri spesifik dalam cacheName.
+     */
+    cacheKey: string;
+
+    /**
+     * Durasi timeout cache sebelum dianggap kedaluwarsa.
+     * Bisa berupa angka (dalam satuan detik) atau objek konfigurasi timeout.
+     */
     timeout: number | TimeoutConfig;
+
+    /**
+     * Jika true, data cache akan dipertahankan walau halaman direfresh atau ditutup.
+     * Jika false atau tidak diisi, cache akan dihapus saat halaman ditutup.
+     */
     persistence?: boolean;
 }
 

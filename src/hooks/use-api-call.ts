@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { isNotEmpty } from "../lib/utils";
 import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCallOptionsProps } from "../types";
 
@@ -25,8 +25,8 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
 
     useEffect(() => {
         const handleBeforeUnload = () => {
-            if (!options?.cache?.persistence && options?.cache?.key) {
-                caches.delete(options?.cache?.key);
+            if (!options?.cache?.persistence && options?.cache?.cacheName) {
+                caches.delete(options?.cache?.cacheName);
             }
         };
 
@@ -38,7 +38,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
         };
     }, []);
 
-    const refresh = async () => {
+    const refresh = useCallback(async () => {
         if (options?.hold) {
             options?.logging && console.log("Hold active");
         }
@@ -47,7 +47,8 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
             data = options?.beforeRequest(data!)
         }
 
-        const key = JSON.stringify(data || "null");
+        const containerKey = options?.cache?.cacheName!;
+        const entry = options?.cache?.cacheKey!;
 
         if (options?.cache) {
 
@@ -57,8 +58,8 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
                 options?.onBeforeRequest(data!)
             }
 
-            const cache = await caches.open(options.cache.key);
-            const cachedResponse = await cache.match(key);
+            const cache = await caches.open(containerKey);
+            const cachedResponse = await cache.match(entry);
             const response: CacheData<DRes> = await cachedResponse?.json();
             if (response) {
                 const { data, expired } = response;
@@ -82,7 +83,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
                     return
                 }
                 else {
-                    await cache.delete(key);
+                    await cache.delete(entry);
                 }
             }
         }
@@ -128,14 +129,13 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
                     data: res,
                     expired
                 }
-
-                const cache = await caches.open(options.cache.key);
+                const cache = await caches.open(containerKey);
                 const response = new Response(JSON.stringify(cacheData));
-                await cache.put(key, response);
+                await cache.put(entry, response);
             }
 
         }
-    }
+    }, [])
 
     useEffect(() => {
         if (options?.refreshInterval) {
