@@ -139,7 +139,7 @@ export interface UseCallOptionsProps<DReq, DRes> extends OptionsHelper {
     refreshInterval: number | TimeoutConfig;
 }
 
-export interface UseApiActionProps<Req, Res> extends OptionsHelper {
+export interface UseApiActionProps<Req, Res> extends Partial<OptionsHelper> {
     onSuccess?: OnCallback<Res>;
     onError?: OnCallback<Res>;
     logging?: boolean;
