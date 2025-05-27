@@ -159,7 +159,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
             }
 
         }
-    }, [])
+    }, [data, api, options]);
 
     // Effect untuk refresh otomatis berkala jika opsi refreshInterval di-set
     useEffect(() => {
