@@ -1,6 +1,6 @@
 import moment from "moment";
-import { useCallback, useEffect, useRef, useState } from "react"
-import { isNotEmpty } from "../lib/utils";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { generateCacheKey, isNotEmpty } from "../lib/utils";
 import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCallOptionsProps, OptionsCallReturn } from "../types";
 
 export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, options?: Partial<UseCallOptionsProps<DReq, DRes>>): UseCallReturnType<DReq, DRes> => {
@@ -15,6 +15,35 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
 
     // Ref untuk menyimpan abort controller agar request bisa dibatalkan saat perlu
     const abortControllerRef = useRef<AbortController>(null);
+
+    const { cacheName, cacheKey, timeout, timeoutUnit, persistence } = useMemo(() => {
+        const cacheName: string = typeof options?.cache === "object" ? (options?.cache?.cacheName ?? api.name) : api.name;
+        const cacheKey: string = generateCacheKey(data, typeof options?.cache === "object" ? options?.cache?.cacheKey : undefined);
+        const persistence: boolean = typeof options?.cache === "object" ? (options?.cache?.persistence ?? false) : false;
+        let timeout: number = 60 * 5
+        let timeoutUnit: moment.DurationInputArg2 = "s";
+
+        if (options?.cache) {
+            if (typeof options.cache !== "boolean") {
+                if (typeof options.cache.timeout === "number") {
+                    timeout = options.cache.timeout;
+                    timeoutUnit = "s";
+                }
+                else if (typeof options.cache.timeout === "object") {
+                    timeout = options.cache.timeout.value;
+                    timeoutUnit = options.cache.timeout.unit;
+                }
+            }
+        }
+
+        return {
+            cacheName,
+            cacheKey,
+            timeout,
+            timeoutUnit,
+            persistence
+        }
+    }, [options?.cache])
 
     // Effect untuk memantau perubahan `data` atau `options.trigger` dan otomatis panggil refresh jika data berubah
     useEffect(() => {
@@ -35,10 +64,11 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
 
     // Effect untuk menangani event sebelum window unload (misal reload/close)
     useEffect(() => {
-        const handleBeforeUnload = () => {
+        const handleBeforeUnload = async () => {
             // Jika cache tidak dipersisten, hapus cache dengan nama cacheName
-            if (!options?.cache?.persistence && options?.cache?.cacheName) {
-                caches.delete(options?.cache?.cacheName);
+            if (!persistence && cacheName && cacheKey) {
+                const cache = await caches.open(cacheName);
+                cache.delete(cacheKey)
             }
         };
 
@@ -62,9 +92,6 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
             data = options?.beforeRequest(data!)
         }
 
-        const containerKey = options?.cache?.cacheName!;
-        const entry = options?.cache?.cacheKey!;
-
         // Jika opsi cache aktif, coba baca dulu dari cache
         if (options?.cache) {
 
@@ -74,8 +101,8 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
                 options?.onBeforeRequest(data!)
             }
 
-            const cache = await caches.open(containerKey);
-            const cachedResponse = await cache.match(entry);
+            const cache = await caches.open(cacheName);
+            const cachedResponse = await cache.match(cacheKey);
             const response: CacheData<DRes> = await cachedResponse?.json();
             if (response) {
                 const { data, expired } = response;
@@ -103,7 +130,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
                 }
                 else {
                     // Jika cache expired, hapus cache entry tersebut
-                    await cache.delete(entry);
+                    await cache.delete(cacheKey);
                 }
             }
         }
@@ -145,17 +172,15 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
 
             // Simpan response API ke cache jika opsi cache aktif
             if (options?.cache) {
-                const timeout = typeof options.cache.timeout === "number" ? options.cache.timeout : options.cache.timeout.value;
-                const timeoutUnit = typeof options.cache.timeout === "number" ? "s" : options.cache.timeout.unit;
                 const expired = moment().add(timeout, timeoutUnit).toISOString();
 
                 const cacheData: CacheData<DRes> = {
                     data: res,
                     expired
                 }
-                const cache = await caches.open(containerKey);
+                const cache = await caches.open(cacheName);
                 const response = new Response(JSON.stringify(cacheData));
-                await cache.put(entry, response);
+                await cache.put(cacheKey, response);
             }
 
         }
@@ -176,6 +201,22 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
 
         return () => { }
     }, [options?.refreshInterval, refresh]);
+
+    // Effect untuk menambahkan event listener saat window/tab browser kembali fokus
+    // Jika opsi refetchOnWindowFocus aktif, maka akan memanggil refresh() otomatis
+    useEffect(() => {
+        if (!options?.refetchOnWindowFocus) return;
+
+        const handleFocus = () => {
+            refresh();
+        };
+
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [options?.refetchOnWindowFocus, refresh]);
 
     // Fungsi untuk membatalkan request API yang sedang berjalan
     const abort = () => {

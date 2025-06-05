@@ -184,3 +184,28 @@ export function jsonCopy<T,>(data: T): T {
         return data;
     }
 }
+
+
+export function stableStringify(obj: any): string {
+    const seen = new WeakSet();
+    return JSON.stringify(obj, function (key, value) {
+        if (value !== null && typeof value === 'object') {
+            if (seen.has(value)) return;
+            seen.add(value);
+            return Object.keys(value)
+                .sort()
+                .reduce((acc, k) => {
+                    acc[k] = value[k];
+                    return acc;
+                }, {} as any);
+        }
+        return value;
+    }) ?? '';
+}
+
+export function generateCacheKey(
+    data?: any,
+    cacheKey?: string | any[]
+): string {
+    return stableStringify([cacheKey ?? "undefined", data ?? "undefined"])
+}

@@ -27,27 +27,52 @@ export type CallbackHelper<T = any> = ((response: ApiResponse<T>) => (void | Api
 type HandleCallback<T = any> = (props: AxiosResponse<T> & { isCancel: boolean; }, err?: any) => ApiResponse;
 
 export interface UseHelperProps {
+    /** Base URL API */
     url: string;
+    /** Header tambahan untuk request */
     headers?: Record<string, string>;
+    /** Token autentikasi, bisa string atau null/undefined jika tidak ada */
     token?: string | null | undefined;
+    /** Callback yang dijalankan setiap response atau error */
     onCallback: HandleCallback;
+    /** Handler khusus jika response tidak authorized */
     onUnauthorized?: (response: ApiResponse) => void;
+    /** Fungsi untuk memeriksa otorisasi response, return true jika authorized */
     handleAuthorization?: (response: ApiResponse, options?: OptionsHelper) => boolean;
+     /** Fungsi untuk menampilkan toast/notification berdasarkan response */
     handleToast?: (response: ApiResponse) => void;
+    /**
+     * Fungsi manipulasi/preparasi data sebelum dikirim ke server.
+     */
     beforeRequest?: (data: any) => any;
+    /** Jika true, toast tidak ditampilkan ketika request dibatalkan */
     disabledToastWhenCancel?: boolean;
 }
 
 export interface OptionsHelper {
+    /** Menampilkan toast/info ketika response success */
     infoSuccess: boolean;
+    /** Menampilkan toast/info ketika response error */
     infoError: boolean;
+    /** Menyisipkan Authorization token.
+     *  - `true` → pakai token default dari `UseHelperProps`
+     *  - `string` → pakai token string ini
+     *  - `false` → tidak menyisipkan token
+     */
     token: boolean | string;
+    /** Header tambahan untuk request */
     headers: Record<string, string>;
+    /** Signal dari AbortController, bisa dipakai untuk cancel request */
     signal: GenericAbortSignal;
+    /** Response type seperti 'json', 'blob', dll */
     responseType: ResponseType;
+    /** Callback ketika ada upload progress (biasanya untuk form upload) */
     onUploadProgress: (props: AxiosProgressEvent) => void;
+    /** Handler saat request unauthorized (status 401/403), bisa override default */
     onUnauthorized: (response: ApiResponse) => void;
+    /** Jika `true`, maka onUnauthorized tidak akan dijalankan */
     disabledHandleUnauthorized: boolean;
+    /** Jika `true`, maka tidak akan munculkan toast saat request dibatalkan (abort) */
     disabledToastWhenCancel?: boolean;
 }
 
@@ -77,11 +102,20 @@ export type ResponseType =
     | 'formdata';
 
 export type OptionsCallReturn<DReq, DRes = DReq> = Partial<ApiResponse<DRes>> & {
+    /** Status loading saat request berlangsung */
     loading: boolean;
+    /** Menjalankan ulang request dengan payload & config sebelumnya */
     refresh: () => void;
+    /** Membatalkan request yang sedang berjalan */
     abort: () => void;
+    /** Clear/reset response dan status terkait */
     clear: () => void;
-    response: ApiResponse<DRes> | undefined | null
+    /** Response dari server (bisa undefined/null jika belum ada atau sudah di-clear) */
+    response: ApiResponse<DRes> | undefined | null;
+    /**
+     * Mengkloning call API dengan payload/config baru.
+     * Cocok untuk membuat instance baru tanpa mempengaruhi state lama.
+     */
     clone: <T = unknown>(newPayload?: DReq, newConfig?: Partial<UseCallOptionsProps<DReq, DRes & T>>) => UseCallReturnType<DReq, DRes>;
 }
 
@@ -100,19 +134,19 @@ interface CacheProps {
      * Nama cache yang akan digunakan sebagai container atau namespace.
      * Biasanya untuk membedakan jenis cache yang berbeda.
      */
-    cacheName: string;
+    cacheName?: string;
 
     /**
      * Kunci unik untuk menyimpan dan mengambil data dari cache.
      * Biasanya merepresentasikan entri spesifik dalam cacheName.
      */
-    cacheKey: string;
+    cacheKey?: string | Array<string | number | boolean | null | undefined | Record<string, any>>;
 
     /**
      * Durasi timeout cache sebelum dianggap kedaluwarsa.
      * Bisa berupa angka (dalam satuan detik) atau objek konfigurasi timeout.
      */
-    timeout: number | TimeoutConfig;
+    timeout?: number | TimeoutConfig;
 
     /**
      * Jika true, data cache akan dipertahankan walau halaman direfresh atau ditutup.
@@ -122,29 +156,88 @@ interface CacheProps {
 }
 
 export interface CacheData<DRes> {
+    /**
+     * Waktu kedaluwarsa cache dalam bentuk ISO string.
+     */
     expired: string;
+    /**
+     * Data respon API yang disimpan dalam cache.
+     */
     data: ApiResponse<DRes>;
 }
 
 export interface UseCallOptionsProps<DReq, DRes> extends OptionsHelper {
+    /**
+     * Jika true, proses request & response akan dicetak ke console.
+     */
     logging: boolean;
+    /**
+     * Fungsi manipulasi/preparasi data sebelum dikirim ke server.
+     */
     beforeRequest: (request: DReq) => DReq;
+    /**
+     * Fungsi manipulasi respon dari server sebelum disimpan atau ditampilkan.
+     */
     afterResponse: (response: DRes) => DRes;
+    /**
+     * Hook yang dijalankan sebelum request diproses.
+     */
     onBeforeRequest: (request: DReq) => void;
+    /**
+     * Hook yang dijalankan setelah respon diterima dari server.
+     */
     onAfterResponse: (response: ApiResponse<DRes>) => void;
+    /**
+     * Daftar dependency yang dapat memicu ulang pemanggilan API jika berubah.
+     */
     trigger: any[];
+    /**
+     * Jika true, maka request tidak dijalankan otomatis hingga dipanggil secara manual.
+     */
     hold: boolean;
+    /**
+     * Callback yang dipanggil setiap kali data berubah.
+     */
     onChange: (data: DReq, options: OptionsCallReturn<DReq, DRes>) => void;
-    cache: CacheProps;
+    /**
+     * Mengaktifkan cache untuk menyimpan respon API.
+     * Bisa true (default pengaturan) atau objek konfigurasi `CacheProps`.
+     */
+    cache: true | CacheProps;
+    /**
+     * Interval auto refresh data. Bisa dalam detik atau konfigurasi TimeoutConfig.
+     */
     refreshInterval: number | TimeoutConfig;
+    /**
+     * Menentukan apakah data akan difetch ulang saat tab aktif kembali.
+     */
+    refetchOnWindowFocus: boolean;
 }
 
 export interface UseApiActionProps<Req, Res> extends Partial<OptionsHelper> {
+    /**
+     * Callback ketika respon berhasil.
+     */
     onSuccess?: OnCallback<Res>;
+    /**
+     * Callback ketika terjadi error.
+     */
     onError?: OnCallback<Res>;
+    /**
+     * Jika true, proses request & response akan dicetak ke console.
+     */
     logging?: boolean;
+    /**
+     * Fungsi manipulasi sebelum request dikirim.
+     */
     beforeRequest?: (request: Req) => Req;
+    /**
+     * Fungsi manipulasi setelah respon diterima.
+     */
     afterResponse?: OnCallback<Res>;
+    /**
+     * Jika true, request akan otomatis dibatalkan saat komponen unmount.
+     */
     abortOnUnmount?: boolean;
 }
 
@@ -153,9 +246,13 @@ type OnCallback<T = any> = (response: ApiResponse<T>) => void
 export type UseApiActionReturnType<Req, Res> = [
     (values: Req) => void,
     Partial<ApiResponse<Res>> & {
+        /** Membatalkan request yang sedang berjalan */
         abort: () => void;
+        /** Clear/reset response dan status terkait */
         reset: () => void;
+        /** Status loading saat request berlangsung */
         loading: boolean;
+        /** Progress upload/download, nilai antara 0 - 100 */
         progress: number;
     }
 ]
