@@ -24,7 +24,7 @@ export const createApiHelper = <DReq = any, DRes = any>({
 
         const encryptRes = typeof options?.encryptResponse === "boolean" ? options?.encryptResponse : encryptResponseDefault;
 
-        if (encryptRes) {
+        if (encryptRes && data) {
             data = decrypt(data);
         }
 
@@ -95,7 +95,7 @@ export const createApiHelper = <DReq = any, DRes = any>({
         }
         const encryptReq = typeof opts?.encryptRequest === "boolean" ? opts?.encryptRequest : encryptRequestDefault;
 
-        if (encryptReq) {
+        if (encryptReq && data) {
             data = encrypt(data)
         }
 
