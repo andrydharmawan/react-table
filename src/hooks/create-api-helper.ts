@@ -26,7 +26,13 @@ export const createApiHelper = <DReq = any, DRes = any>({
         const encryptRes = typeof options?.encryptResponse === "boolean" ? options?.encryptResponse : encryptResponseDefault;
 
         if (encryptRes && data) {
-            data = decrypt(data, options?.passphrase || passphrase);
+            const keys = options?.passphrase
+                ? (options.passphrase === "default"
+                    ? passphrase
+                    : options.passphrase)
+                : passphrase;
+
+            data = decrypt(data, keys);
         }
 
         const result: ApiResponse = onCallback({ ...{ ...response, data }, isCancel }, err)
@@ -97,7 +103,13 @@ export const createApiHelper = <DReq = any, DRes = any>({
         const encryptReq = typeof opts?.encryptRequest === "boolean" ? opts?.encryptRequest : encryptRequestDefault;
 
         if (encryptReq && data) {
-            data = encrypt(data, opts.passphrase || passphrase)
+            const keys = opts?.passphrase
+                ? (opts.passphrase === "default"
+                    ? passphrase
+                    : opts.passphrase)
+                : passphrase;
+
+            data = encrypt(data, keys)
         }
 
         return client({

@@ -6,19 +6,19 @@ export function useCrypto() {
 
     return {
         passphrase,
-        encrypt<T>(payload: T, passphraseProps?: string) {
+        encrypt<T>(payload: T, passphraseProps?: string | null) {
             if (!passphrase || !passphraseProps) throw new Error("Passphrase is required");
             return encrypt(payload, passphraseProps || passphrase);
         },
-        decrypt<T>(data: EncryptedPayload, passphraseProps?: string) {
+        decrypt<T>(data: EncryptedPayload, passphraseProps?: string | null) {
             if (!passphrase || !passphraseProps) throw new Error("Passphrase is required");
             return decrypt<T>(data, passphraseProps || passphrase);
         },
-        encryptString(payload: string, passphraseProps?: string) {
+        encryptString(payload: string, passphraseProps?: string | null) {
             if (!passphrase || !passphraseProps) throw new Error("Passphrase is required");
             return encryptString(payload, passphraseProps || passphrase);
         },
-        decryptString(data: string, passphraseProps?: string) {
+        decryptString(data: string, passphraseProps?: string | null) {
             if (!passphrase || !passphraseProps) throw new Error("Passphrase is required");
             return decryptString(data, passphraseProps || passphrase);
         },
