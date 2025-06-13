@@ -1,4 +1,8 @@
-import CryptoJS from "crypto-js";
+import AES from "crypto-js/aes";
+import PBKDF2 from "crypto-js/pbkdf2";
+import Utf8 from "crypto-js/enc-utf8";
+import Base64 from "crypto-js/enc-base64";
+import WordArray from "crypto-js/lib-typedarrays";
 
 export type EncryptedPayload = {
     salt: string;
@@ -7,19 +11,19 @@ export type EncryptedPayload = {
 };
 
 export function encrypt<T = unknown>(payload: T, passphrase: string): EncryptedPayload {
-    const salt = CryptoJS.lib.WordArray.random(16);
-    const iv = CryptoJS.lib.WordArray.random(16);
+    const salt = WordArray.random(16);
+    const iv = WordArray.random(16);
 
-    const key = CryptoJS.PBKDF2(passphrase, salt, {
+    const key = PBKDF2(passphrase, salt, {
         keySize: 256 / 32,
         iterations: 1000,
     });
 
-    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(payload), key, { iv }).toString();
+    const encrypted = AES.encrypt(JSON.stringify(payload), key, { iv }).toString();
 
     return {
-        salt: salt.toString(CryptoJS.enc.Base64),
-        iv: iv.toString(CryptoJS.enc.Base64),
+        salt: salt.toString(Base64),
+        iv: iv.toString(Base64),
         encrypted,
     };
 }
@@ -27,17 +31,16 @@ export function encrypt<T = unknown>(payload: T, passphrase: string): EncryptedP
 export function decrypt<T = unknown>(cipherPayload: EncryptedPayload, passphrase: string): T {
     const { salt, iv, encrypted } = cipherPayload;
 
-    const key = CryptoJS.PBKDF2(passphrase, CryptoJS.enc.Base64.parse(salt), {
+    const key = PBKDF2(passphrase, Base64.parse(salt), {
         keySize: 256 / 32,
         iterations: 1000,
     });
 
-    const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
-        iv: CryptoJS.enc.Base64.parse(iv),
+    const decrypted = AES.decrypt(encrypted, key, {
+        iv: Base64.parse(iv),
     });
 
-    const plainText = decrypted.toString(CryptoJS.enc.Utf8);
-
+    const plainText = decrypted.toString(Utf8);
     return JSON.parse(plainText);
 }
 
