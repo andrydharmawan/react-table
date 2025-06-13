@@ -21,7 +21,7 @@ export const createApiHelper = <DReq = any, DRes = any>({
 
     const handleResponse = (response: AxiosResponse, callback?: CallbackHelper, options?: OptionsHelper, err?: any): any => {
         const isCancel = err?.code === "ERR_CANCELED";
-        let data = response.data;
+        let data = response?.data;
 
         const encryptRes = typeof options?.encryptResponse === "boolean" ? options?.encryptResponse : encryptResponseDefault;
 
