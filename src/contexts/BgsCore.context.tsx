@@ -13,6 +13,7 @@ type FormatContextProps = {
 }
 
 export type BgsCoreProps = {
+    passphrase?: string;
     format: FormatContextProps;
 }
 

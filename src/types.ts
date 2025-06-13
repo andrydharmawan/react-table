@@ -39,7 +39,7 @@ export interface UseHelperProps {
     onUnauthorized?: (response: ApiResponse) => void;
     /** Fungsi untuk memeriksa otorisasi response, return true jika authorized */
     handleAuthorization?: (response: ApiResponse, options?: OptionsHelper) => boolean;
-     /** Fungsi untuk menampilkan toast/notification berdasarkan response */
+    /** Fungsi untuk menampilkan toast/notification berdasarkan response */
     handleToast?: (response: ApiResponse) => void;
     /**
      * Fungsi manipulasi/preparasi data sebelum dikirim ke server.
@@ -47,6 +47,21 @@ export interface UseHelperProps {
     beforeRequest?: (data: any) => any;
     /** Jika true, toast tidak ditampilkan ketika request dibatalkan */
     disabledToastWhenCancel?: boolean;
+    /** 
+     * Jika true, maka cookie seperti HttpOnly akan dikirim dalam request.
+     * Digunakan saat autentikasi berbasis cookie (bukan token di header Authorization).
+     */
+    withCredentials?: boolean;
+    /** 
+     * Jika `true`, data request akan dienkripsi sebelum dikirim ke server. 
+     * Pastikan server dapat mendekripsi payload ini.
+     */
+    encryptRequest?: boolean;
+    /** 
+     * Jika `true`, data response dari server akan didekripsi. 
+     * Asumsinya response telah terenkripsi sebelumnya oleh server.
+     */
+    encryptResponse?: boolean;
 }
 
 export interface OptionsHelper {
@@ -74,6 +89,22 @@ export interface OptionsHelper {
     disabledHandleUnauthorized: boolean;
     /** Jika `true`, maka tidak akan munculkan toast saat request dibatalkan (abort) */
     disabledToastWhenCancel?: boolean;
+    /** 
+     * Jika true, maka cookie seperti HttpOnly akan dikirim dalam request.
+     * Digunakan saat autentikasi berbasis cookie (bukan token di header Authorization).
+     */
+    withCredentials?: boolean;
+    /** 
+     * Jika `true`, data request akan dienkripsi sebelum dikirim ke server. 
+     * Pastikan server dapat mendekripsi payload ini.
+     */
+    encryptRequest?: boolean;
+
+    /** 
+     * Jika `true`, data response dari server akan didekripsi. 
+     * Asumsinya response telah terenkripsi sebelumnya oleh server.
+     */
+    encryptResponse?: boolean;
 }
 
 export type ClientCallback<T> = (response: AxiosResponse<T>, err?: any) => any;
@@ -262,37 +293,37 @@ export enum DataTypeEnum { number = "number", date = "date", dateTime = "dateTim
 
 
 export type NestedKeyOf<T> =
-  T extends object
+    T extends object
     ? T extends Array<infer U>
-      ? `${number}` | `${number}.${NestedKeyOf<U>}`
-      : {
-          [K in keyof T]: T[K] extends Array<infer U>
-            ? `${K & string}` | `${K & string}[${number}]` | `${K & string}[${number}].${NestedKeyOf<U>}`
-            : T[K] extends object
-              ? `${K & string}` | `${K & string}.${NestedKeyOf<T[K]>}`
-              : `${K & string}`;
-        }[keyof T]
+    ? `${number}` | `${number}.${NestedKeyOf<U>}`
+    : {
+        [K in keyof T]: T[K] extends Array<infer U>
+        ? `${K & string}` | `${K & string}[${number}]` | `${K & string}[${number}].${NestedKeyOf<U>}`
+        : T[K] extends object
+        ? `${K & string}` | `${K & string}.${NestedKeyOf<T[K]>}`
+        : `${K & string}`;
+    }[keyof T]
     : never;
 
 
 export type PathValue<T, P extends string> =
-  P extends `${infer K}[${infer I}].${infer R}`
+    P extends `${infer K}[${infer I}].${infer R}`
     ? K extends keyof T
-      ? T[K] extends Array<infer U>
-        ? PathValue<U, R>
-        : never
-      : never
-  : P extends `${infer K}[${infer I}]`
+    ? T[K] extends Array<infer U>
+    ? PathValue<U, R>
+    : never
+    : never
+    : P extends `${infer K}[${infer I}]`
     ? K extends keyof T
-      ? T[K] extends Array<infer U>
-        ? U
-        : never
-      : never
-  : P extends `${infer K}.${infer R}`
+    ? T[K] extends Array<infer U>
+    ? U
+    : never
+    : never
+    : P extends `${infer K}.${infer R}`
     ? K extends keyof T
-      ? PathValue<T[K], R>
-      : never
-  : P extends keyof T
+    ? PathValue<T[K], R>
+    : never
+    : P extends keyof T
     ? T[P]
     : never;
 

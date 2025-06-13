@@ -1,10 +1,34 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
 import { UseHelperProps, ApiResponse, OptionsHelper, CallbackHelper, ClientCallback, HttpMethod, ApiDefaultMethod, ApiDefaultFetch as ApiDefaultFetch } from "../types";
+import { useCrypto } from "./use-crypto.hook";
 
-export const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequest, onCallback, headers: headerProps, onUnauthorized, handleToast, handleAuthorization = () => true, disabledToastWhenCancel: disabledToastWhenCancelProps }: UseHelperProps) => {
+export const createApiHelper = <DReq = any, DRes = any>({
+    url,
+    token,
+    beforeRequest,
+    onCallback,
+    headers: headerProps,
+    onUnauthorized,
+    handleToast,
+    handleAuthorization = () => true,
+    disabledToastWhenCancel: disabledToastWhenCancelProps,
+    withCredentials,
+    encryptRequest: encryptRequestDefault,
+    encryptResponse: encryptResponseDefault,
+}: UseHelperProps) => {
+    const { encrypt, decrypt } = useCrypto()
+
     const handleResponse = (response: AxiosResponse, callback?: CallbackHelper, options?: OptionsHelper, err?: any): any => {
         const isCancel = err?.code === "ERR_CANCELED";
-        const result: ApiResponse = onCallback({ ...response, isCancel }, err)
+        let data = response.data;
+
+        const encryptRes = typeof options?.encryptResponse === "boolean" ? options?.encryptResponse : encryptResponseDefault;
+
+        if (encryptRes) {
+            data = decrypt(data);
+        }
+
+        const result: ApiResponse = onCallback({ ...{ ...response, data }, isCancel }, err)
 
         const disabledToastCancel = typeof options?.disabledToastWhenCancel === "boolean" ? options?.disabledToastWhenCancel : disabledToastWhenCancelProps;
 
@@ -28,6 +52,7 @@ export const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequ
     const client = (props: AxiosRequestConfig, callback: ClientCallback<DRes> = () => { }) => {
         const clientAxios = axios.create({
             baseURL: `${url}`,
+            withCredentials: typeof props.withCredentials === "boolean" ? props.withCredentials : withCredentials,
         });
 
         return clientAxios(props)
@@ -68,6 +93,11 @@ export const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequ
         if (beforeRequest) {
             data = beforeRequest(data);
         }
+        const encryptReq = typeof opts?.encryptRequest === "boolean" ? opts?.encryptRequest : encryptRequestDefault;
+
+        if (encryptReq) {
+            data = encrypt(data)
+        }
 
         return client({
             url,
@@ -76,6 +106,7 @@ export const createApiHelper = <DReq = any, DRes = any>({ url, token, beforeRequ
             headers,
             responseType: opts.responseType,
             signal: opts.signal,
+            withCredentials: opts.withCredentials,
             onUploadProgress: e => {
                 if (opts?.onUploadProgress) opts?.onUploadProgress(e)
             },
