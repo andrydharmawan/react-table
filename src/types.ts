@@ -62,6 +62,15 @@ export interface UseHelperProps {
      * Asumsinya response telah terenkripsi sebelumnya oleh server.
      */
     encryptResponse?: boolean;
+    /** 
+     * Kata sandi atau kunci untuk proses enkripsi dan dekripsi data. 
+     * Digunakan bersama `encryptRequest` dan `encryptResponse` untuk memastikan 
+     * data terenkripsi dan terdekripsi dengan algoritma yang sama di sisi client dan server.
+     * Harus disepakati antara client dan server.
+     * 
+     * Secara default, nilai passphrase akan diambil dari context `bgsCore` jika ada.
+     */
+    passphrase?: string;
 }
 
 export interface OptionsHelper {
@@ -105,6 +114,15 @@ export interface OptionsHelper {
      * Asumsinya response telah terenkripsi sebelumnya oleh server.
      */
     encryptResponse?: boolean;
+    /** 
+     * Kata sandi atau kunci untuk proses enkripsi dan dekripsi data. 
+     * Digunakan bersama `encryptRequest` dan `encryptResponse` untuk memastikan 
+     * data terenkripsi dan terdekripsi dengan algoritma yang sama di sisi client dan server.
+     * Harus disepakati antara client dan server.
+     * 
+     * Secara default, nilai passphrase akan diambil dari context `bgsCore` jika ada.
+     */
+    passphrase?: string;
 }
 
 export type ClientCallback<T> = (response: AxiosResponse<T>, err?: any) => any;

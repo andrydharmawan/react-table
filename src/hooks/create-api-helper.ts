@@ -15,6 +15,7 @@ export const createApiHelper = <DReq = any, DRes = any>({
     withCredentials,
     encryptRequest: encryptRequestDefault,
     encryptResponse: encryptResponseDefault,
+    passphrase,
 }: UseHelperProps) => {
     const { encrypt, decrypt } = useCrypto()
 
@@ -25,7 +26,7 @@ export const createApiHelper = <DReq = any, DRes = any>({
         const encryptRes = typeof options?.encryptResponse === "boolean" ? options?.encryptResponse : encryptResponseDefault;
 
         if (encryptRes && data) {
-            data = decrypt(data);
+            data = decrypt(data, options?.passphrase || passphrase);
         }
 
         const result: ApiResponse = onCallback({ ...{ ...response, data }, isCancel }, err)
@@ -96,7 +97,7 @@ export const createApiHelper = <DReq = any, DRes = any>({
         const encryptReq = typeof opts?.encryptRequest === "boolean" ? opts?.encryptRequest : encryptRequestDefault;
 
         if (encryptReq && data) {
-            data = encrypt(data)
+            data = encrypt(data, opts.passphrase || passphrase)
         }
 
         return client({

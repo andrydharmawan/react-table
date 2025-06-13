@@ -4,21 +4,23 @@ import { encrypt, decrypt, EncryptedPayload, decryptString, encryptString } from
 export function useCrypto() {
     const { passphrase } = useBgsCore();
 
-    if (!passphrase) throw new Error("Passphrase is required");
-
     return {
         passphrase,
-        encrypt<T>(payload: T) {
-            return encrypt(payload, passphrase);
+        encrypt<T>(payload: T, passphraseProps?: string) {
+            if (!passphrase || !passphraseProps) throw new Error("Passphrase is required");
+            return encrypt(payload, passphraseProps || passphrase);
         },
-        decrypt<T>(data: EncryptedPayload) {
-            return decrypt<T>(data, passphrase);
+        decrypt<T>(data: EncryptedPayload, passphraseProps?: string) {
+            if (!passphrase || !passphraseProps) throw new Error("Passphrase is required");
+            return decrypt<T>(data, passphraseProps || passphrase);
         },
-        encryptString(payload: string) {
-            return encryptString(payload, passphrase);
+        encryptString(payload: string, passphraseProps?: string) {
+            if (!passphrase || !passphraseProps) throw new Error("Passphrase is required");
+            return encryptString(payload, passphraseProps || passphrase);
         },
-        decryptString(data: string) {
-            return decryptString(data, passphrase);
+        decryptString(data: string, passphraseProps?: string) {
+            if (!passphrase || !passphraseProps) throw new Error("Passphrase is required");
+            return decryptString(data, passphraseProps || passphrase);
         },
     };
 }
