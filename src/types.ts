@@ -122,7 +122,7 @@ export interface OptionsHelper {
      * 
      * Secara default, nilai passphrase akan diambil dari context `bgsCore` jika ada.
      */
-    passphrase?: string | "default" | null;
+    passphrase?: string | true | null;
 }
 
 export type ClientCallback<T> = (response: AxiosResponse<T>, err?: any) => any;

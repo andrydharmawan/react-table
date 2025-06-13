@@ -17,7 +17,7 @@ export const createApiHelper = <DReq = any, DRes = any>({
     encryptResponse: encryptResponseDefault,
     passphrase,
 }: UseHelperProps) => {
-    const { encrypt, decrypt } = useCrypto()
+    const { encrypt, decrypt, passphrase: passphraseCore } = useCrypto()
 
     const handleResponse = (response: AxiosResponse, callback?: CallbackHelper, options?: OptionsHelper, err?: any): any => {
         const isCancel = err?.code === "ERR_CANCELED";
@@ -27,8 +27,8 @@ export const createApiHelper = <DReq = any, DRes = any>({
 
         if (encryptRes && data) {
             const keys = options?.passphrase
-                ? (options.passphrase === "default"
-                    ? passphrase
+                ? (typeof options.passphrase === "boolean" && options.passphrase
+                    ? passphraseCore
                     : options.passphrase)
                 : passphrase;
 
@@ -103,10 +103,10 @@ export const createApiHelper = <DReq = any, DRes = any>({
         const encryptReq = typeof opts?.encryptRequest === "boolean" ? opts?.encryptRequest : encryptRequestDefault;
 
         if (encryptReq && data) {
-            const keys = opts?.passphrase
-                ? (opts.passphrase === "default"
-                    ? passphrase
-                    : opts.passphrase)
+            const keys = options?.passphrase
+                ? (typeof options.passphrase === "boolean" && options.passphrase
+                    ? passphraseCore
+                    : options.passphrase)
                 : passphrase;
 
             data = encrypt(data, keys)
