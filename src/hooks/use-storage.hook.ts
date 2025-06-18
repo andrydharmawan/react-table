@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCrypto } from "./use-crypto.hook";
 
 export const useStorage = () => {
@@ -13,16 +13,39 @@ export const useStorage = () => {
         }
     }, [encrypt]);
 
-    const get = useCallback(<T = any>(key: string): T | null => {
-        try {
-            const raw = localStorage.getItem(key);
-            if (!raw) return null;
-            return decrypt(JSON.parse(raw));
-        } catch (e) {
-            console.error("Failed to get from storage:", e);
-            return null;
-        }
-    }, [decrypt]);
+    const get = <T = any>(key: string) => {
+        const [value, setValue] = useState<T | null>(() => {
+            try {
+                const raw = localStorage.getItem(key);
+                if (!raw) return null;
+                return decrypt(JSON.parse(raw));
+            } catch (e) {
+                console.error("Failed to parse localStorage value", e);
+                return null;
+            }
+        });
+
+        useEffect(() => {
+            const handler = (event: StorageEvent) => {
+                if (event.key === key) {
+                    if (event.newValue) {
+                        try {
+                            setValue(decrypt(JSON.parse(event.newValue)));
+                        } catch (e) {
+                            console.error("Decrypt error from storage event", e);
+                        }
+                    } else {
+                        setValue(null);
+                    }
+                }
+            };
+
+            window.addEventListener("storage", handler);
+            return () => window.removeEventListener("storage", handler);
+        }, [key, decrypt]);
+
+        return value;
+    };
 
     const clear = useCallback((key?: string) => {
         if (key) {
