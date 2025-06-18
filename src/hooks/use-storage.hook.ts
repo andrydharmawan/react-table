@@ -13,7 +13,18 @@ export const useStorage = () => {
         }
     }, [encrypt]);
 
-    const get = <T = any>(key: string) => {
+    const get = useCallback(<T = any>(key: string): T | null => {
+        try {
+            const raw = localStorage.getItem(key);
+            if (!raw) return null;
+            return decrypt(JSON.parse(raw));
+        } catch (e) {
+            console.error("Failed to get from storage:", e);
+            return null;
+        }
+    }, [decrypt]);
+
+    const useWatchStorage = <T = any>(key: string) => {
         const [value, setValue] = useState<T | null>(() => {
             try {
                 const raw = localStorage.getItem(key);
@@ -56,5 +67,5 @@ export const useStorage = () => {
         }
     }, []);
 
-    return { save, get, clear };
+    return { save, get, clear, useWatchStorage };
 };
