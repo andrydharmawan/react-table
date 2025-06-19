@@ -14,6 +14,7 @@ type FormatContextProps = {
 
 export type BgsCoreProps = {
     passphrase?: string;
+    storageKey?: string;
     format: FormatContextProps;
 }
 

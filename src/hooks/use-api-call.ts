@@ -2,8 +2,14 @@ import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { generateCacheKey, isNotEmpty } from "../lib/utils";
 import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCallOptionsProps, OptionsCallReturn } from "../types";
+import { useBgsCore } from "../contexts/BgsCore.context";
+import { useStorage } from "./use-storage.hook";
 
 export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, options?: Partial<UseCallOptionsProps<DReq, DRes>>): UseCallReturnType<DReq, DRes> => {
+    const { storageKey } = useBgsCore();
+    const storage = useStorage()
+    const session = storageKey ? storage.get<string>(storageKey) : undefined;
+
     // State untuk menandakan proses loading (request API)
     const [loading, setLoading] = useState<boolean>(false)
 
@@ -18,7 +24,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
 
     const { cacheName, cacheKey, timeout, timeoutUnit, persistence } = useMemo(() => {
         const cacheName: string = typeof options?.cache === "object" ? (options?.cache?.cacheName ?? api.name) : api.name;
-        const cacheKey: string = generateCacheKey(data, typeof options?.cache === "object" ? options?.cache?.cacheKey : undefined);
+        const cacheKey: string = generateCacheKey({ ...data, session }, typeof options?.cache === "object" ? options?.cache?.cacheKey : undefined);
         const persistence: boolean = typeof options?.cache === "object" ? (options?.cache?.persistence ?? false) : false;
         let timeout: number = 60 * 5
         let timeoutUnit: moment.DurationInputArg2 = "s";
