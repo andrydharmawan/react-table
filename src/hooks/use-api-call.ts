@@ -88,7 +88,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
     }, []);
 
     // Fungsi utama refresh, yang melakukan request API dengan cache handling dan abort controller
-    const refresh = useCallback(async () => {
+    const refresh = useCallback(async (force?: boolean) => {
         if (options?.hold) {
             options?.logging && console.log("Hold active");
         }
@@ -99,7 +99,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
         }
 
         // Jika opsi cache aktif, coba baca dulu dari cache
-        if (options?.cache) {
+        if (options?.cache && !force) {
 
             setLoading(true)
 

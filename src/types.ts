@@ -154,7 +154,7 @@ export type OptionsCallReturn<DReq, DRes = DReq> = Partial<ApiResponse<DRes>> & 
     /** Status loading saat request berlangsung */
     loading: boolean;
     /** Menjalankan ulang request dengan payload & config sebelumnya */
-    refresh: () => void;
+    refresh: (force?: boolean) => void;
     /** Membatalkan request yang sedang berjalan */
     abort: () => void;
     /** Clear/reset response dan status terkait */
