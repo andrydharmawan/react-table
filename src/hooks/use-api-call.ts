@@ -182,7 +182,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
             setIsCancel(false);
 
             // Simpan response API ke cache jika opsi cache aktif
-            if (options?.cache) {
+            if (options?.cache && res.status) {
                 const expired = moment().add(timeout, timeoutUnit).toISOString();
 
                 const cacheData: CacheData<DRes> = {
