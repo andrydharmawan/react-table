@@ -166,6 +166,10 @@ export type OptionsCallReturn<DReq, DRes = DReq> = Partial<ApiResponse<DRes>> & 
      * Cocok untuk membuat instance baru tanpa mempengaruhi state lama.
      */
     clone: <T = unknown>(newPayload?: DReq, newConfig?: Partial<UseCallOptionsProps<DReq, DRes & T>>) => UseCallReturnType<DReq, DRes>;
+    /** Menunjukkan apakah request terakhir dibatalkan (via abort). 
+     * Berguna untuk mengabaikan cache saat refresh berikutnya.
+     */
+    isCancel: boolean;
 }
 
 export type UseCallReturnType<DReq, DRes = DReq> = [

@@ -12,6 +12,9 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
     // State untuk menandakan proses loading (request API)
     const [loading, setLoading] = useState<boolean>(false)
 
+    //State untuk menandakan proses cancel (request API)
+    const [isCancel, setIsCancel] = useState<boolean>(false)
+
     // State untuk menyimpan response dari API
     const [response, setResponse] = useState<ApiResponse<DRes> | undefined | null>()
 
@@ -99,7 +102,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
         }
 
         // Jika opsi cache aktif, coba baca dulu dari cache
-        if (options?.cache && !force) {
+        if (options?.cache && !force && !isCancel) {
 
             setLoading(true)
 
@@ -176,6 +179,8 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
 
             setResponse(res)
 
+            setIsCancel(false);
+
             // Simpan response API ke cache jika opsi cache aktif
             if (options?.cache) {
                 const expired = moment().add(timeout, timeoutUnit).toISOString();
@@ -229,6 +234,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
         abortControllerRef.current?.abort();
         abortControllerRef.current = null;
         setLoading(false)
+        setIsCancel(true);
     };
 
     // Fungsi untuk reset state loading dan response ke kondisi awal
@@ -245,6 +251,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
         abort,
         clear,
         response,
+        isCancel,
         clone: (newPayload: any, newConfig: any) => useApiCall(api, newPayload, newConfig)
     }
 
