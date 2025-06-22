@@ -32,10 +32,20 @@ export const createApiHelper = <DReq = any, DRes = any>({
                     : options.passphrase)
                 : passphrase;
 
-            data = decrypt(data, keys);
+            try {
+                data = decrypt(data, keys);
+            } catch (error) {
+                try {
+                    data = decrypt(data, passphraseCore);
+                } catch (error) {
+
+                }
+            }
         }
 
-        const result: ApiResponse = onCallback({ ...{ ...response, data }, isCancel }, err)
+        let result: ApiResponse = onCallback({ ...{ ...response, data }, isCancel }, err)
+
+        result = { ...result, isCancel };
 
         const disabledToastCancel = typeof options?.disabledToastWhenCancel === "boolean" ? options?.disabledToastWhenCancel : disabledToastWhenCancelProps;
 

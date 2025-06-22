@@ -20,6 +20,7 @@ export interface ApiResponse<T = any> {
     paging?: PaginationMeta;
     message: string;
     code: number;
+    isCancel?: boolean;
 }
 
 export type CallbackHelper<T = any> = ((response: ApiResponse<T>) => (void | ApiResponse<T>))
