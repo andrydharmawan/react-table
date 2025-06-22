@@ -20,12 +20,14 @@ export interface ApiResponse<T = any> {
     paging?: PaginationMeta;
     message: string;
     code: number;
-    isCancel?: boolean;
+    isCancel: boolean;
+    isUnauthorization: boolean;
+    httpCode: number;
 }
 
 export type CallbackHelper<T = any> = ((response: ApiResponse<T>) => (void | ApiResponse<T>))
 
-type HandleCallback<T = any> = (props: AxiosResponse<T> & { isCancel: boolean; }, err?: any) => ApiResponse;
+type HandleCallback<T = any> = (props: AxiosResponse<T> & { isCancel: boolean; isUnauthorization: boolean; }, err?: any) => Omit<ApiResponse, "httpCode" | "isCancel" | "isUnauthorization">;
 
 export interface UseHelperProps {
     /** Base URL API */

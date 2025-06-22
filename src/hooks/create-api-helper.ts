@@ -10,7 +10,7 @@ export const createApiHelper = <DReq = any, DRes = any>({
     headers: headerProps,
     onUnauthorized,
     handleToast,
-    handleAuthorization = () => true,
+    handleAuthorization,
     disabledToastWhenCancel: disabledToastWhenCancelProps,
     withCredentials,
     encryptRequest: encryptRequestDefault,
@@ -21,6 +21,7 @@ export const createApiHelper = <DReq = any, DRes = any>({
 
     const handleResponse = (response: AxiosResponse, callback?: CallbackHelper, options?: OptionsHelper, err?: any): any => {
         const isCancel = err?.code === "ERR_CANCELED";
+        const isUnauthorization = response.status === 401;
         let data = response?.data;
 
         const encryptRes = typeof options?.encryptResponse === "boolean" ? options?.encryptResponse : encryptResponseDefault;
@@ -43,13 +44,13 @@ export const createApiHelper = <DReq = any, DRes = any>({
             }
         }
 
-        let result: ApiResponse = onCallback({ ...{ ...response, data }, isCancel }, err)
+        const responseCallback = onCallback({ ...{ ...response, data }, isCancel, isUnauthorization }, err);
 
-        result = { ...result, isCancel };
+        const result: ApiResponse = { ...responseCallback, isCancel, isUnauthorization, httpCode: response.status };
 
         const disabledToastCancel = typeof options?.disabledToastWhenCancel === "boolean" ? options?.disabledToastWhenCancel : disabledToastWhenCancelProps;
 
-        const authorized = handleAuthorization(result, options)
+        const authorized = handleAuthorization ? handleAuthorization(result, options) : !isUnauthorization;
 
         if ((options?.infoSuccess && result.status) || (options?.infoError && !result.status)) {
             if (handleToast && (!isCancel || !disabledToastCancel)) {
