@@ -276,7 +276,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
     }
 
     if (options?.name) {
-        const store = getApiStore(options.name);
+        const store = getApiStore(options?.name);
 
         store.setState([
             response?.data,
