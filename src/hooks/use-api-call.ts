@@ -275,8 +275,8 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
         clone: (newPayload: any, newConfig: any) => useApiCall(api, newPayload, newConfig)
     }
 
-    if (options?.name) {
-        const store = getApiStore(options?.name);
+    if (options?.storeName) {
+        const store = getApiStore(options?.storeName);
 
         store.setState([
             response?.data,

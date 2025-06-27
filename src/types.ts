@@ -269,20 +269,20 @@ export interface UseCallOptionsProps<DReq, DRes> extends OptionsHelper {
      */
     refetchOnWindowFocus: boolean;
     /**
-     * Nama unik untuk request API ini.
+     * Nama unik untuk store/context/cache dari request API ini.
      * 
      * Properti ini digunakan sebagai identitas untuk:
-     * - Menyimpan data di context/global store agar bisa diakses di komponen lain.
-     * - Memberi nama cache (jika cache aktif dan tidak ditentukan cacheName manual).
-     * - Menghindari konflik antar pemanggilan API berbeda.
+     * - Menyimpan hasil request di global store agar bisa diakses antar komponen.
+     * - Menamai cache secara otomatis jika `cacheName` tidak diatur manual.
+     * - Menghindari konflik antar pemanggilan API yang berbeda.
      * 
      * Disarankan menggunakan nama yang deskriptif dan unik per endpoint, 
-     * misalnya: "history", "summary", "userProfile", dst.
+     * seperti: "historyAbsence", "dashboardSummary", "userProfile", dst.
      * 
      * Contoh penggunaan bersama context:
-     * const [data, { loading }] = useApiContext("history")
+     * const [data, options] = useApiStore(api.absence.history, "historyAbsence")
      */
-    name: string;
+    storeName: string;
 }
 
 export interface UseApiActionProps<Req, Res> extends Partial<OptionsHelper> {
