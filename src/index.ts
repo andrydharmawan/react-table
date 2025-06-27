@@ -15,6 +15,7 @@ export * from "./hooks/use-scroll.hook";
 export * from "./hooks/use-pagination.hook";
 export * from "./hooks/use-storage.hook";
 export * from "./hooks/use-crypto.hook";
+export * from "./hooks/use-api-context";
 export * from "./hooks/create-element";
 export * from "./types";
 export * from "./components/Element";

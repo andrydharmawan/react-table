@@ -185,7 +185,7 @@ interface TimeoutConfig {
     unit: moment.DurationInputArg2
 }
 
-interface CacheProps {
+export interface CacheProps {
     /** 
      * Nama cache yang akan digunakan sebagai container atau namespace.
      * Biasanya untuk membedakan jenis cache yang berbeda.
@@ -268,6 +268,21 @@ export interface UseCallOptionsProps<DReq, DRes> extends OptionsHelper {
      * Menentukan apakah data akan difetch ulang saat tab aktif kembali.
      */
     refetchOnWindowFocus: boolean;
+    /**
+     * Nama unik untuk request API ini.
+     * 
+     * Properti ini digunakan sebagai identitas untuk:
+     * - Menyimpan data di context/global store agar bisa diakses di komponen lain.
+     * - Memberi nama cache (jika cache aktif dan tidak ditentukan cacheName manual).
+     * - Menghindari konflik antar pemanggilan API berbeda.
+     * 
+     * Disarankan menggunakan nama yang deskriptif dan unik per endpoint, 
+     * misalnya: "history", "summary", "userProfile", dst.
+     * 
+     * Contoh penggunaan bersama context:
+     * const [data, { loading }] = useApiContext("history")
+     */
+    name: string;
 }
 
 export interface UseApiActionProps<Req, Res> extends Partial<OptionsHelper> {
@@ -485,3 +500,5 @@ export type ElementType<T> = T extends (infer U)[] ? U : T;
 
 export type BgsTableProps<P = unknown, D = any> = Omit<BgsTableDefaultProps<P, D>, "Table" | "TableBody" | "TableCell" | "TableFooter" | "TableHead" | "TableHeader" | "TableRow">;
 export type BgsTableComponent = <P = unknown, D = any>(props: PropsWithChildren<BgsTableProps<P, D>> & { ref?: React.ForwardedRef<BgsTableRef<P, D>> }) => any;
+
+export type SelectedNested<T,> = Partial<Record<NestedKeyOf<T>, any>>

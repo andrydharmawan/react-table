@@ -4,9 +4,10 @@ import { generateCacheKey, isNotEmpty } from "../lib/utils";
 import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCallOptionsProps, OptionsCallReturn } from "../types";
 import { useBgsCore } from "../contexts/BgsCore.context";
 import { useStorage } from "./use-storage.hook";
+import { getApiStore } from "../lib/api-store";
 
 export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, options?: Partial<UseCallOptionsProps<DReq, DRes>>): UseCallReturnType<DReq, DRes> => {
-    const { storageKey } = useBgsCore();
+    const { storageKey, cache: cacheCore } = useBgsCore();
     const storage = useStorage()
 
     // State untuk menandakan proses loading (request API)
@@ -28,9 +29,28 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
         const session = storageKey ? storage.get<string>(storageKey) : undefined;
         const cacheName: string = typeof options?.cache === "object" ? (options?.cache?.cacheName ?? api.name) : api.name;
         const cacheKey: string = generateCacheKey({ ...data, session }, typeof options?.cache === "object" ? options?.cache?.cacheKey : undefined);
-        const persistence: boolean = typeof options?.cache === "object" ? (options?.cache?.persistence ?? false) : false;
+
+        let persistence: boolean = false;
+
+        if (typeof cacheCore?.persistence === "boolean") persistence = cacheCore?.persistence;
+
+        if (typeof options?.cache === "object" && typeof options?.cache?.persistence === "boolean") {
+            persistence = options?.cache?.persistence ?? false;
+        }
+
         let timeout: number = 60 * 5
         let timeoutUnit: moment.DurationInputArg2 = "s";
+
+        if (isNotEmpty(cacheCore?.timeout)) {
+            if (typeof cacheCore?.timeout === "number") {
+                timeout = cacheCore.timeout;
+                timeoutUnit = "s";
+            }
+            else if (typeof cacheCore?.timeout === "object") {
+                timeout = cacheCore?.timeout.value;
+                timeoutUnit = cacheCore?.timeout.unit;
+            }
+        }
 
         if (options?.cache) {
             if (typeof options.cache !== "boolean") {
@@ -52,7 +72,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
             timeoutUnit,
             persistence
         }
-    }, [options?.cache, storageKey])
+    }, [options?.cache, storageKey, cacheCore])
 
     // Effect untuk memantau perubahan `data` atau `options.trigger` dan otomatis panggil refresh jika data berubah
     useEffect(() => {
@@ -253,6 +273,15 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
         response,
         isCancel,
         clone: (newPayload: any, newConfig: any) => useApiCall(api, newPayload, newConfig)
+    }
+
+    if (options?.name) {
+        const store = getApiStore(options.name);
+
+        store.setState([
+            response?.data,
+            resultOptions,
+        ]);
     }
 
     // Return berupa tuple [data, options]

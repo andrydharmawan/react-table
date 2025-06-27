@@ -1,5 +1,6 @@
 import { createContext, PropsWithChildren, useContext } from "react";
 import { OptionsNumberProps } from "../hooks/use-formatted";
+import { CacheProps } from "../types";
 
 type FormatType = { display: string; value: string; }
 
@@ -16,6 +17,7 @@ export type BgsCoreProps = {
     passphrase?: string;
     storageKey?: string;
     format: FormatContextProps;
+    cache?: Omit<CacheProps, "cacheName" | "cacheKey">
 }
 
 const BgsCoreContext = createContext<BgsCoreProps | undefined>(undefined);
