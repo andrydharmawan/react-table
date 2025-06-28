@@ -6,16 +6,16 @@ import { useBgsCore } from "../contexts/BgsCore.context";
 import { useStorage } from "./use-storage.hook";
 import { getApiStore } from "../lib/api-store";
 
+export function useApiCall<DRes>(
+    api: ApiMethodVoid<DRes>,
+    options?: Partial<UseCallOptionsProps<undefined, DRes>>
+): UseCallReturnType<undefined, DRes>;
+
 export function useApiCall<DReq, DRes>(
     api: ApiMethod<DReq, DRes>,
     data: DReq,
     options?: Partial<UseCallOptionsProps<DReq, DRes>>
 ): UseCallReturnType<DReq, DRes>;
-
-export function useApiCall<DRes>(
-    api: ApiMethodVoid<DRes>,
-    options?: Partial<UseCallOptionsProps<undefined, DRes>>
-): UseCallReturnType<undefined, DRes>;
 
 export function useApiCall<DReq, DRes>(
     api: ApiMethod<DReq, DRes> | ApiMethodVoid<DRes>,
