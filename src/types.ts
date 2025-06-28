@@ -314,19 +314,26 @@ export interface UseApiActionProps<Req, Res> extends Partial<OptionsHelper> {
 
 type OnCallback<T = any> = (response: ApiResponse<T>) => void
 
-export type UseApiActionReturnType<Req, Res> = [
-    (values: Req) => void,
-    Partial<ApiResponse<Res>> & {
-        /** Membatalkan request yang sedang berjalan */
-        abort: () => void;
-        /** Clear/reset response dan status terkait */
-        reset: () => void;
-        /** Status loading saat request berlangsung */
-        loading: boolean;
-        /** Progress upload/download, nilai antara 0 - 100 */
-        progress: number;
-    }
-]
+export type ApiActionState<Res> = Partial<ApiResponse<Res>> & {
+    /** Membatalkan request yang sedang berjalan */
+    abort: () => void;
+    /** Clear/reset response dan status terkait */
+    reset: () => void;
+    /** Status loading saat request berlangsung */
+    loading: boolean;
+    /** Progress upload/download, nilai antara 0 - 100 */
+    progress: number;
+};
+
+export type UseApiActionReturnType<Req, Res> = Req extends undefined
+    ? [
+        (values?: Req) => void,
+        ApiActionState<Res>
+    ]
+    : [
+        (values: Req) => void,
+        ApiActionState<Res>
+    ];
 
 export type DataType = "number" | "date" | "dateTime" | "month" | "year" | "time" | "string" | "boolean";
 export enum DataTypeEnum { number = "number", date = "date", dateTime = "dateTime", month = "month", year = "year", time = "time", string = "string", boolean = "boolean" };

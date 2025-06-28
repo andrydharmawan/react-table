@@ -1,7 +1,18 @@
 import { useEffect, useRef, useState } from "react"
-import { ApiMethod, ApiResponse, UseApiActionProps, UseApiActionReturnType } from "../types";
+import { ApiMethod, ApiResponse, FetchRequestMethod, OptionsHelper, UseApiActionProps, UseApiActionReturnType } from "../types";
+import { isNotEmpty } from "../lib/utils";
 
-export const useApiAction = <DReq, DRes>(api: ApiMethod<DReq, DRes>, props?: UseApiActionProps<DReq, DRes>): UseApiActionReturnType<DReq, DRes> => {
+export function useApiAction<DReq, DRes>(
+    api: ApiMethod<DReq, DRes>,
+    props?: UseApiActionProps<DReq, DRes>
+): UseApiActionReturnType<DReq, DRes>;
+
+export function useApiAction<DRes>(
+    api: FetchRequestMethod<DRes>,
+    props?: UseApiActionProps<undefined, DRes>
+): UseApiActionReturnType<undefined, DRes>;
+
+export function useApiAction<DReq, DRes>(api: ApiMethod<DReq, DRes> | FetchRequestMethod<DRes>, props?: UseApiActionProps<DReq, DRes>): UseApiActionReturnType<DReq, DRes> {
     const [loading, setLoading] = useState<boolean>(false)
     const [response, setResponse] = useState<ApiResponse<DRes> | undefined | null>()
     const [progress, setProgress] = useState<number>(0);
@@ -31,14 +42,19 @@ export const useApiAction = <DReq, DRes>(api: ApiMethod<DReq, DRes>, props?: Use
             console.log("Before request", values)
         }
 
-        const res = await api(values, undefined, {
+        const options: Partial<OptionsHelper> = {
             ...props,
             signal: controller.signal,
             onUploadProgress: (progressEvent) => {
                 const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
                 setProgress(percentCompleted);
             },
-        })
+        }
+
+        const res = isNotEmpty(values)
+            ? await api(values as any, undefined, options)
+            : await (api as FetchRequestMethod<DRes>)(undefined, options);
+
         if (props?.logging) {
             console.log("After response", res)
         }
@@ -73,5 +89,5 @@ export const useApiAction = <DReq, DRes>(api: ApiMethod<DReq, DRes>, props?: Use
             progress,
             reset,
         },
-    ]
+    ] as unknown as UseApiActionReturnType<DReq, DRes>
 }
