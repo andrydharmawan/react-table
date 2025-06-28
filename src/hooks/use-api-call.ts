@@ -1,12 +1,32 @@
 import moment from "moment";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { generateCacheKey, isNotEmpty } from "../lib/utils";
-import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCallOptionsProps, OptionsCallReturn } from "../types";
+import { ApiMethod, CacheData, ApiResponse, UseCallReturnType, UseCallOptionsProps, OptionsCallReturn, ApiMethodVoid } from "../types";
 import { useBgsCore } from "../contexts/BgsCore.context";
 import { useStorage } from "./use-storage.hook";
 import { getApiStore } from "../lib/api-store";
 
-export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, options?: Partial<UseCallOptionsProps<DReq, DRes>>): UseCallReturnType<DReq, DRes> => {
+export function useApiCall<DReq, DRes>(
+    api: ApiMethod<DReq, DRes>,
+    data: DReq,
+    options?: Partial<UseCallOptionsProps<DReq, DRes>>
+): UseCallReturnType<DReq, DRes>;
+
+export function useApiCall<DRes>(
+    api: ApiMethodVoid<DRes>,
+    options?: Partial<UseCallOptionsProps<undefined, DRes>>
+): UseCallReturnType<undefined, DRes>;
+
+export function useApiCall<DReq, DRes>(
+    api: ApiMethod<DReq, DRes> | ApiMethodVoid<DRes>,
+    dataOrOptions?: DReq | Partial<UseCallOptionsProps<DReq, DRes>>,
+    maybeOptions?: Partial<UseCallOptionsProps<DReq, DRes>>
+): UseCallReturnType<DReq, DRes> {
+    const hasData = arguments.length === 3;
+
+    const data = hasData ? dataOrOptions as DReq : undefined;
+    const options = hasData ? maybeOptions : dataOrOptions as Partial<UseCallOptionsProps<DReq, DRes>>;
+
     const { storageKey, cache: cacheCore } = useBgsCore();
     const storage = useStorage()
 
@@ -112,13 +132,15 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
 
     // Fungsi utama refresh, yang melakukan request API dengan cache handling dan abort controller
     const refresh = useCallback(async (force?: boolean) => {
+        let finalData: DReq | undefined = data;
+
         if (options?.hold) {
             options?.logging && console.log("Hold active");
         }
 
         // Jika ada hook beforeRequest, panggil untuk modifikasi data sebelum request
         if (options?.beforeRequest) {
-            data = options?.beforeRequest(data!)
+            finalData = options?.beforeRequest(data!)
         }
 
         // Jika opsi cache aktif, coba baca dulu dari cache
@@ -181,8 +203,11 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
                 options?.onBeforeRequest(data!)
             }
 
+
             // Panggil API dengan abort signal untuk bisa dibatalkan jika perlu
-            const res = await api(data!, undefined, { ...options, signal: controller.signal })
+            const res = hasData
+                ? await (api as ApiMethod<DReq, DRes>)(finalData!, undefined, { ...options, signal: controller.signal })
+                : await (api as ApiMethodVoid<DRes>)(undefined, { ...options, signal: controller.signal })
 
             // Jika ada hook afterResponse, modifikasi data hasil API
             if (options?.afterResponse && res?.data) res.data = options?.afterResponse(res.data)
@@ -272,7 +297,7 @@ export const useApiCall = <DReq, DRes>(api: ApiMethod<DReq, DRes>, data?: DReq, 
         clear,
         response,
         isCancel,
-        clone: (newPayload: any, newConfig: any) => useApiCall(api, newPayload, newConfig)
+        clone: (newPayload: any, newConfig: any) => useApiCall(api as ApiMethod<DReq, DRes>, newPayload, newConfig)
     }
 
     useEffect(() => {

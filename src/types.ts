@@ -139,7 +139,7 @@ export enum HttpMethod {
 }
 
 export type ApiMethod<DReq = any, DRes = DReq> = (data: DReq, callback?: CallbackHelper<DRes>, options?: Partial<OptionsHelper>) => Promise<ApiResponse<DRes>>;
-export type FetchRequestMethod<DRes = any> = <Res = DRes>(callback?: CallbackHelper<Res>, options?: Partial<OptionsHelper>) => Promise<ApiResponse<Res>>;
+export type ApiMethodVoid<DRes = any> = <Res = DRes>(callback?: CallbackHelper<Res>, options?: Partial<OptionsHelper>) => Promise<ApiResponse<Res>>;
 
 export type ApiDefaultMethod<DReq = any, DRes = DReq> = <Req = DReq, Res = DRes>(url: string, data: Req, callback?: CallbackHelper<Res>, options?: Partial<OptionsHelper>) => Promise<ApiResponse<Res>>;
 export type ApiDefaultFetch<DRes = any> = <Res = DRes>(url: string, callback?: CallbackHelper<Res>, options?: Partial<OptionsHelper>) => Promise<ApiResponse<Res>>;
@@ -168,7 +168,10 @@ export type OptionsCallReturn<DReq, DRes = DReq> = Partial<ApiResponse<DRes>> & 
      * Mengkloning call API dengan payload/config baru.
      * Cocok untuk membuat instance baru tanpa mempengaruhi state lama.
      */
-    clone: <T = unknown>(newPayload?: DReq, newConfig?: Partial<UseCallOptionsProps<DReq, DRes & T>>) => UseCallReturnType<DReq, DRes>;
+    clone: <T = unknown>(
+        newPayload?: DReq,
+        newConfig?: Partial<UseCallOptionsProps<DReq, DRes & T>>
+    ) => UseCallReturnType<DReq, DRes>;
     /** Menunjukkan apakah request terakhir dibatalkan (via abort). 
      * Berguna untuk mengabaikan cache saat refresh berikutnya.
      */

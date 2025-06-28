@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { ApiMethod, ApiResponse, FetchRequestMethod, OptionsHelper, UseApiActionProps, UseApiActionReturnType } from "../types";
+import { ApiMethod, ApiResponse, ApiMethodVoid, OptionsHelper, UseApiActionProps, UseApiActionReturnType } from "../types";
 import { isNotEmpty } from "../lib/utils";
 
 export function useApiAction<DReq, DRes>(
@@ -8,11 +8,14 @@ export function useApiAction<DReq, DRes>(
 ): UseApiActionReturnType<DReq, DRes>;
 
 export function useApiAction<DRes>(
-    api: FetchRequestMethod<DRes>,
+    api: ApiMethodVoid<DRes>,
     props?: UseApiActionProps<undefined, DRes>
 ): UseApiActionReturnType<undefined, DRes>;
 
-export function useApiAction<DReq, DRes>(api: ApiMethod<DReq, DRes> | FetchRequestMethod<DRes>, props?: UseApiActionProps<DReq, DRes>): UseApiActionReturnType<DReq, DRes> {
+export function useApiAction<DReq, DRes>(
+    api: ApiMethod<DReq, DRes> | ApiMethodVoid<DRes>,
+    props?: UseApiActionProps<DReq, DRes>
+): UseApiActionReturnType<DReq, DRes> {
     const [loading, setLoading] = useState<boolean>(false)
     const [response, setResponse] = useState<ApiResponse<DRes> | undefined | null>()
     const [progress, setProgress] = useState<number>(0);
@@ -52,8 +55,8 @@ export function useApiAction<DReq, DRes>(api: ApiMethod<DReq, DRes> | FetchReque
         }
 
         const res = isNotEmpty(values)
-            ? await api(values as any, undefined, options)
-            : await (api as FetchRequestMethod<DRes>)(undefined, options);
+            ? await (api as ApiMethod<DReq, DRes>)(values, undefined, options)
+            : await (api as ApiMethodVoid<DRes>)(undefined, options);
 
         if (props?.logging) {
             console.log("After response", res)
