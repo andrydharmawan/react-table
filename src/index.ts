@@ -3,14 +3,14 @@ import BgsTable from "./components/Table";
 export default BgsTable;
 
 export { type BgsTableDefaultProps } from "./components/Table";
-export * from "./hooks/use-api-call";
+export * from "./hooks/use-api-load";
 export * from "./hooks/use-delay";
 export * from "./hooks/use-formatted";
 export * from "./hooks/use-sticky-table";
 export * from "./hooks/use-interval";
 export * from "./hooks/use-key-press";
 export * from "./hooks/create-api-helper";
-export * from "./hooks/use-api-action";
+export * from "./hooks/use-api-send";
 export * from "./hooks/use-scroll.hook";
 export * from "./hooks/use-pagination.hook";
 export * from "./hooks/use-storage.hook";

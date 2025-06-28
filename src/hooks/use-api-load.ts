@@ -6,18 +6,18 @@ import { useBgsCore } from "../contexts/BgsCore.context";
 import { useStorage } from "./use-storage.hook";
 import { getApiStore } from "../lib/api-store";
 
-export function useApiCall<DRes>(
+export function useApiLoad<DRes>(
     api: ApiMethodVoid<DRes>,
     options?: Partial<UseCallOptionsProps<undefined, DRes>>
 ): UseCallReturnType<undefined, DRes>;
 
-export function useApiCall<DReq, DRes>(
+export function useApiLoad<DReq, DRes>(
     api: ApiMethod<DReq, DRes>,
     data: DReq,
     options?: Partial<UseCallOptionsProps<DReq, DRes>>
 ): UseCallReturnType<DReq, DRes>;
 
-export function useApiCall<DReq, DRes>(
+export function useApiLoad<DReq, DRes>(
     api: ApiMethod<DReq, DRes> | ApiMethodVoid<DRes>,
     dataOrOptions?: DReq | Partial<UseCallOptionsProps<DReq, DRes>>,
     maybeOptions?: Partial<UseCallOptionsProps<DReq, DRes>>
@@ -297,7 +297,7 @@ export function useApiCall<DReq, DRes>(
         clear,
         response,
         isCancel,
-        clone: (newPayload: any, newConfig: any) => useApiCall(api as ApiMethod<DReq, DRes>, newPayload, newConfig)
+        clone: (newPayload: any, newConfig: any) => useApiLoad(api as ApiMethod<DReq, DRes>, newPayload, newConfig)
     }
 
     useEffect(() => {

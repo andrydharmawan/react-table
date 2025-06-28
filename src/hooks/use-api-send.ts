@@ -1,21 +1,21 @@
 import { useEffect, useRef, useState } from "react"
-import { ApiMethod, ApiResponse, ApiMethodVoid, OptionsHelper, UseApiActionProps, UseApiActionReturnType } from "../types";
+import { ApiMethod, ApiResponse, ApiMethodVoid, OptionsHelper, UseApiSendProps, UseApiSendReturnType } from "../types";
 import { isNotEmpty } from "../lib/utils";
 
-export function useApiAction<DReq, DRes>(
+export function useApiSend<DReq, DRes>(
     api: ApiMethod<DReq, DRes>,
-    props?: UseApiActionProps<DReq, DRes>
-): UseApiActionReturnType<DReq, DRes>;
+    props?: UseApiSendProps<DReq, DRes>
+): UseApiSendReturnType<DReq, DRes>;
 
-export function useApiAction<DRes>(
+export function useApiSend<DRes>(
     api: ApiMethodVoid<DRes>,
-    props?: UseApiActionProps<undefined, DRes>
-): UseApiActionReturnType<undefined, DRes>;
+    props?: UseApiSendProps<undefined, DRes>
+): UseApiSendReturnType<undefined, DRes>;
 
-export function useApiAction<DReq, DRes>(
+export function useApiSend<DReq, DRes>(
     api: ApiMethod<DReq, DRes> | ApiMethodVoid<DRes>,
-    props?: UseApiActionProps<DReq, DRes>
-): UseApiActionReturnType<DReq, DRes> {
+    props?: UseApiSendProps<DReq, DRes>
+): UseApiSendReturnType<DReq, DRes> {
     const [loading, setLoading] = useState<boolean>(false)
     const [response, setResponse] = useState<ApiResponse<DRes> | undefined | null>()
     const [progress, setProgress] = useState<number>(0);
@@ -92,5 +92,5 @@ export function useApiAction<DReq, DRes>(
             progress,
             reset,
         },
-    ] as unknown as UseApiActionReturnType<DReq, DRes>
+    ] as unknown as UseApiSendReturnType<DReq, DRes>
 }

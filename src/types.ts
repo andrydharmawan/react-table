@@ -288,7 +288,7 @@ export interface UseCallOptionsProps<DReq, DRes> extends OptionsHelper {
     storeName: string;
 }
 
-export interface UseApiActionProps<Req, Res> extends Partial<OptionsHelper> {
+export interface UseApiSendProps<Req, Res> extends Partial<OptionsHelper> {
     /**
      * Callback ketika respon berhasil.
      */
@@ -328,7 +328,7 @@ export type ApiActionState<Res> = Partial<ApiResponse<Res>> & {
     progress: number;
 };
 
-export type UseApiActionReturnType<Req, Res> = Req extends undefined
+export type UseApiSendReturnType<Req, Res> = Req extends undefined
     ? [
         (values?: Req) => void,
         ApiActionState<Res>
