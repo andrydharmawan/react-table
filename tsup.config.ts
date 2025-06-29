@@ -10,5 +10,5 @@ export default defineConfig({
     minifyIdentifiers: true,
     sourcemap: false,
     splitting: true,
-    external: ["react", "react-dom", "moment", "crypto-js", "@bgscore/react-core"],
+    external: ["react", "react-dom", "@bgscore/react-core"],
 })
