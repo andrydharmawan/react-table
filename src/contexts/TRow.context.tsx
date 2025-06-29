@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { BgsTableRef, useBgsTable } from "./Table.context";
-import { Children, RowData } from "../types";
-import { renderChildren } from "../lib/utils";
+import { RowData } from "../types";
+import { Children, renderChildren } from "@bgscore/react-core";
 
 export type TableRowReturnData<P = unknown, D = any> = RowData<D> & BgsTableRef<P, D> & {
     open: boolean;

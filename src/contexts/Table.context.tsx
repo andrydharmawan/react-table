@@ -2,7 +2,7 @@ import { createContext, forwardRef, PropsWithChildren, ReactNode, useContext, us
 import { BgsTableDefaultProps } from "../components/Table";
 import { buildHeaderLevels, flattenColumns, parseColumns, parseFooter, parseMasterDetail } from "../lib/utils.internal";
 import { ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
-import { BgsCoreProps, useBgsCore } from "./BgsCore.context";
+import { BgsCoreProps, useBgsCore } from "@bgscore/react-core";
 
 export interface BgsTableContextData<P = unknown, D = any> extends BgsTableDefaultProps<P, D> {
     tableRef: React.RefObject<HTMLTableElement | null>;

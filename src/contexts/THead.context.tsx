@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
-import { Children, NestedKeyOf, ColumnProps } from "../types";
-import { renderChildren } from "../lib/utils";
+import { ColumnProps } from "../types";
+import { Children, NestedKeyOf, } from "@bgscore/react-core";
+import { renderChildren } from "@bgscore/react-core";
 import { BgsTableRef, useBgsTable } from "./Table.context";
 
 export type TableHeadReturnData<P = unknown, D = any, K extends NestedKeyOf<D> = NestedKeyOf<D>> = ColumnProps<P, D, K> & BgsTableRef<P, D> & TableHeadProviderProps & {

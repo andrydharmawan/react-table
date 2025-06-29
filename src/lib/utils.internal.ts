@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import { ColumnGroupProps, ColumnMapping, ColumnProps, FooterProps, HeaderLevel, MasterDetailProps } from "../types";
-import { labelFormatter } from "./utils";
+import { labelFormatter } from "@bgscore/react-core";
 
 
 function isColumn<DRes>(

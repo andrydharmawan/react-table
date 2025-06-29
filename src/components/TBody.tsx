@@ -2,9 +2,8 @@ import { useLayoutEffect, useRef } from "react"
 import { useBgsTable } from "../contexts/Table.context"
 import { TCellProps, TCellTypeEnum, TRowProps, TRowTypeEnum } from "../types"
 import TableRowProvider, { useBgsTableRow } from "../contexts/TRow.context"
-import { renderChildren, getFieldValue } from "../lib/utils"
 import TableCellProvider from "../contexts/TCell.context"
-import { useFormatted } from "../hooks/use-formatted"
+import { getFieldValue, renderChildren, useFormatted } from "@bgscore/react-core"
 
 export default function TBody() {
     const {

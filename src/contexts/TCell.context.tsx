@@ -1,8 +1,9 @@
 import { createContext, useContext } from "react";
-import { Children, ColumnData, PathValue, NestedKeyOf, ColumnProps } from "../types";
+import { ColumnData, ColumnProps } from "../types";
+import { Children, PathValue, NestedKeyOf } from "@bgscore/react-core";
 import { TableRowReturnData, useBgsTableRow } from "./TRow.context";
-import { renderChildren, getFieldValue } from "../lib/utils";
-import { useFormatted } from "../hooks/use-formatted";
+import { renderChildren, getFieldValue } from "@bgscore/react-core";
+import { useFormatted } from "@bgscore/react-core";
 
 export type TableCellReturnData<P = unknown, D = any, K extends NestedKeyOf<D> = NestedKeyOf<D>> = ColumnProps<P, D, K> & ColumnData<D, P, PathValue<D, K>> & TableRowReturnData<P, D> & {
     columnRef: React.RefObject<HTMLTableCellElement | null>;
