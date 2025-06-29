@@ -1,6 +1,6 @@
 {
     "name": "@bgscore/react-table",
-    "version": "0.0.91",
+    "version": "1.0.0",
     "description": "A React utility library that provides advanced API hooks (fetch, mutation, caching) and a customizable Table component with built-in pagination, sorting, and loading states. Built for scalable and flexible data handling in modern React applications.",
     "main": "dist/index.cjs",
     "module": "dist/index.js",
@@ -27,9 +27,9 @@
     "author": "Andry Bagus Dharmawan",
     "license": "MIT",
     "peerDependencies": {
+        "@bgscore/react-core": ">=0.0.8",
         "react": ">=17.0.0",
-        "react-dom": ">=17.0.0",
-        "@bgscore/react-core": ">=0.0.3"
+        "react-dom": ">=17.0.0"
     },
     "devDependencies": {
         "@types/react": "^19.1.1",
