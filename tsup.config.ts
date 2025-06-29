@@ -10,5 +10,6 @@ export default defineConfig({
     minifyIdentifiers: true,
     sourcemap: false,
     splitting: true,
+    treeshake: true,
     external: ["react", "react-dom", "@bgscore/react-core"],
 })
