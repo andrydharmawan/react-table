@@ -53,6 +53,7 @@ const Row: TRowProps = ({ rowIndex, rowData }) => {
 const Cell: TCellProps<unknown> = (props) => {
     const columnRef = useRef<HTMLTableCellElement>(null)
     const { rowData, rowRef } = useBgsTableRow()
+    const formatted = useFormatted()
 
     let { sticky, dataField, rowIndex, columnIndex, dataType } = props;
 
@@ -109,9 +110,8 @@ const Cell: TCellProps<unknown> = (props) => {
     }, [sticky, rowIndex, children, rowRef.current, columnRef.current, columnIndex]);
 
     let value = dataField && getFieldValue(rowData, dataField);//sama bgttt - TCell.context.tsx
-
     if (value && dataType) {
-        value = useFormatted(value, dataType)
+        value = formatted(value, dataType)
     }
 
     return <>
