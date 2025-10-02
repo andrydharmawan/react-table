@@ -8,7 +8,7 @@ export type StickyTableOptions = {
         hidden: string;        // class to hide border (default: 'hidden')
     };
     deps: any[];
-    onChange?: (state: {
+    onScroll?: (state: {
         start: boolean;
         end: boolean;
         table: HTMLTableElement;
@@ -61,7 +61,7 @@ export function useStickyTable(
                 ensureBorder(rightStickies[0], "right", end);
             }
         }
-        options.onChange?.({ start, end, table, container });
+        options.onScroll?.({ start, end, table, container });
     }, [containerRef, tableRef, ensureBorder, options]);
 
     useLayoutEffect(() => {
