@@ -58,7 +58,6 @@ const Cell: TCellProps<unknown> = (props) => {
 
     const {
         TableCell,
-        tableRef,
         children,
     } = useBgsTable();
 
@@ -93,7 +92,8 @@ const Cell: TCellProps<unknown> = (props) => {
         window.addEventListener("resize", handleResize);
         handleResize();
 
-        const colGroup = tableRef.current?.querySelector("colgroup");
+        const table = columnRef.current?.closest("table");
+        const colGroup = table?.querySelector("colgroup");
         const cols = colGroup ? Array.from(colGroup.children) : [];
 
         const resizeObserver = new ResizeObserver(() => {
@@ -106,7 +106,7 @@ const Cell: TCellProps<unknown> = (props) => {
             resizeObserver.disconnect();
             window.removeEventListener("resize", handleResize);
         };
-    }, [sticky, rowIndex, tableRef.current, children, rowRef.current, columnRef.current, columnIndex]);
+    }, [sticky, rowIndex, children, rowRef.current, columnRef.current, columnIndex]);
 
     let value = dataField && getFieldValue(rowData, dataField);//sama bgttt - TCell.context.tsx
 

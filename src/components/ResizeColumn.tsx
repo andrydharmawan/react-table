@@ -10,7 +10,7 @@ export const ResizeColumn = ({
     gripClassName,
     lineClassName,
 }: ResizeColumnProps) => {
-    const { tableRef, columnRef, columnIndex } = useBgsTableColumnHead();
+    const { columnRef, columnIndex } = useBgsTableColumnHead();
     const handleRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
@@ -18,7 +18,7 @@ export const ResizeColumn = ({
             const startX = e.clientX;
             const startWidth = columnRef.current?.offsetWidth || 0;
 
-            const table = tableRef.current;
+            const table = columnRef.current?.closest("table");
             const tableRect = table?.getBoundingClientRect();
             const cellRect = columnRef.current?.getBoundingClientRect();
 
@@ -71,7 +71,7 @@ export const ResizeColumn = ({
                 handle.removeEventListener("mousedown", handleMouseDown);
             }
         };
-    }, [columnRef, tableRef, columnIndex]);
+    }, [columnRef, columnIndex, handleRef]);
 
     return (
         <div

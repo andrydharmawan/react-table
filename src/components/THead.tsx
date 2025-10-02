@@ -33,7 +33,6 @@ const Cell: THeadProps<unknown> = (props) => {
 
     const {
         TableHead,
-        tableRef,
         children,
     } = useBgsTable();
 
@@ -42,7 +41,8 @@ const Cell: THeadProps<unknown> = (props) => {
             const current = columnRef.current;
             if (!current || !sticky) return;
 
-            const tr = tableRef.current?.querySelectorAll("thead tr")[rowIndex];
+            const table = current?.closest("table");
+            const tr = table?.querySelectorAll("thead tr")[rowIndex];
             if (!tr) return;
 
             const children = Array.from(tr.children) as HTMLElement[];
@@ -68,8 +68,9 @@ const Cell: THeadProps<unknown> = (props) => {
 
         window.addEventListener("resize", handleResize);
         handleResize();
-
-        const colGroup = tableRef.current?.querySelector("colgroup");
+        
+        const table = columnRef.current?.closest("table");
+        const colGroup = table?.querySelector("colgroup");
         const cols = colGroup ? Array.from(colGroup.children) : [];
 
         const resizeObserver = new ResizeObserver(() => {
@@ -82,7 +83,7 @@ const Cell: THeadProps<unknown> = (props) => {
             resizeObserver.disconnect();
             window.removeEventListener("resize", handleResize);
         };
-    }, [sticky, rowIndex, tableRef.current, children, columnIndex]);
+    }, [sticky, rowIndex, children, columnIndex]);
 
     return <>
         <TableColumnHeadProvider {...props} columnIndex={columnIndex} columnRef={columnRef} rowIndex={rowIndex}>

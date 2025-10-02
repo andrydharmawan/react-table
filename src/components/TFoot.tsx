@@ -44,7 +44,6 @@ const Cell: ColumunFooterProps<{
 
     const {
         TableCell,
-        tableRef,
         children,
         columnsWithChild,
     } = useBgsTable();
@@ -82,7 +81,8 @@ const Cell: ColumunFooterProps<{
         window.addEventListener("resize", handleResize);
         handleResize();
 
-        const colGroup = tableRef.current?.querySelector("colgroup");
+        const table = columnRef.current?.closest("table");
+        const colGroup = table?.querySelector("colgroup");
         const cols = colGroup ? Array.from(colGroup.children) : [];
 
         const resizeObserver = new ResizeObserver(() => {
@@ -95,7 +95,7 @@ const Cell: ColumunFooterProps<{
             resizeObserver.disconnect();
             window.removeEventListener("resize", handleResize);
         };
-    }, [sticky, rowIndex, tableRef.current, children, rowRef.current, columnRef.current]);
+    }, [sticky, rowIndex, children, rowRef.current, columnRef.current]);
 
     return <>
         <TableCell columnIndex={columnIndex} rowIndex={rowIndex} ref={columnRef} key={columnIndex} {...others} colSpan={colSpan} data-sticky={sticky} type={TCellTypeEnum.foot}>

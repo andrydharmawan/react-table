@@ -8,6 +8,12 @@ export type StickyTableOptions = {
         hidden: string;        // class to hide border (default: 'hidden')
     };
     deps: any[];
+    onChange?: (state: {
+        start: boolean;
+        end: boolean;
+        table: HTMLTableElement;
+        container: HTMLDivElement;
+    }) => void;
 };
 
 export function useStickyTable(
@@ -31,15 +37,17 @@ export function useStickyTable(
     }, [options.classNames]);
 
     const evaluateStickyEdges = useCallback(() => {
-        const scrollLeft = containerRef.current?.scrollLeft ?? 0;
-        const offsetWidth = containerRef.current?.offsetWidth ?? 0;
-        const scrollWidth = containerRef.current?.scrollWidth ?? 0;
+        const container = containerRef.current;
+        const table = tableRef.current;
+
+        if (!table || !container) return;
+
+        const scrollLeft = container.scrollLeft ?? 0;
+        const offsetWidth = container.offsetWidth ?? 0;
+        const scrollWidth = container.scrollWidth ?? 0;
 
         const start = scrollLeft > 0;
         const end = scrollLeft + offsetWidth < scrollWidth;
-
-        const table = tableRef.current;
-        if (!table) return;
 
         const rows = table.querySelectorAll("tr");
         for (const row of rows) {
@@ -53,7 +61,8 @@ export function useStickyTable(
                 ensureBorder(rightStickies[0], "right", end);
             }
         }
-    }, [containerRef, tableRef]);
+        options.onChange?.({ start, end, table, container });
+    }, [containerRef, tableRef, ensureBorder, options]);
 
     useLayoutEffect(() => {
         const tableEl = tableRef.current;

@@ -3,6 +3,10 @@ import BgsTable from "./components/Table";
 export default BgsTable;
 
 export { type BgsTableDefaultProps } from "./components/Table";
+export { default as THead } from "./components/THead";
+export { default as TBody } from "./components/TBody";
+export { default as TFoot} from "./components/TFoot";
+export { default as Highlight} from "./components/Highlight";
 export * from "./hooks/use-sticky-table";
 export * from "./hooks/use-pagination.hook";
 export * from "./types";
