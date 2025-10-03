@@ -9,11 +9,14 @@ export default function TBody() {
     const {
         TableBody,
         dataSource = [],
+        loading,
     } = useBgsTable<any[]>()
 
     return <>
         <TableBody>
-            {(dataSource as any[]).map((rowData, rowIndex) => (
+            <Loading />
+            <NoData />
+            {!loading && (dataSource as any[])?.map((rowData, rowIndex) => (
                 <Row key={rowIndex} rowData={rowData} rowIndex={rowIndex} />
             ))}
         </TableBody>
@@ -132,5 +135,43 @@ const Cell: TCellProps<unknown> = (props) => {
                 </TableCell>
             </>}
         </TableCellProvider>
+    </>
+}
+
+const Loading = () => {
+    const {
+        TableLoading,
+        loading,
+        columnsWithChild,
+    } = useBgsTable<any[]>()
+    return <>
+        {loading && (
+            <tr>
+                <td colSpan={columnsWithChild?.length}>
+                    <TableLoading />
+                </td>
+            </tr>
+        )}
+    </>
+}
+
+const NoData = () => {
+    const {
+        TableNoData,
+        loading,
+        dataSource,
+        columnsWithChild,
+    } = useBgsTable<any[]>()
+
+    const length = dataSource?.length ?? 0;
+
+    return <>
+        {(!loading && length === 0) && (
+            <tr>
+                <td colSpan={columnsWithChild?.length}>
+                    <TableNoData />
+                </td>
+            </tr>
+        )}
     </>
 }

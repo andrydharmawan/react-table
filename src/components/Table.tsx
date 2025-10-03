@@ -1,6 +1,6 @@
-import React, { useImperativeHandle, useRef } from "react";
+import React, { ReactNode, useImperativeHandle, useRef } from "react";
 import { PropsWithChildren } from "react";
-import { ElementType, TableProps, TBodyProps, TCellProps, TFooterProps, THeaderProps, THeadProps, TRowProps } from "../types";
+import { ElementType, TableProps, TBodyProps, TCellProps, TFooterProps, THeaderProps, THeadProps, TLoadingProps, TNoDataProps, TRowProps } from "../types";
 import BgsTableProvider, { BgsTableRef } from "../contexts/Table.context";
 import THead from "./THead";
 import TBody from "./TBody";
@@ -10,6 +10,7 @@ import { TableCellReturnData } from "../contexts/TCell.context";
 
 export interface BgsTableDefaultProps<P = unknown, D = any> {
     dataSource: D;
+    loading: boolean;
     onRowClick?: (props: TableRowReturnData<P, ElementType<D>> & { event: React.MouseEvent<HTMLTableRowElement, MouseEvent> }) => void;
     onCellClick?: (props: TableCellReturnData<P, ElementType<D>> & { event: React.MouseEvent<HTMLTableCellElement, MouseEvent> }) => void;
     Table: TableProps;
@@ -17,6 +18,8 @@ export interface BgsTableDefaultProps<P = unknown, D = any> {
     TableBody: TBodyProps;
     TableFooter: TFooterProps;
     TableRow: TRowProps;
+    TableLoading: TLoadingProps;
+    TableNoData: TNoDataProps;
     TableHead: THeadProps<any>;
     TableCell: TCellProps<unknown>;
 }

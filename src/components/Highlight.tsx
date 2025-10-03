@@ -19,10 +19,10 @@ export default function Highlight({ label = "", search = "", bgcolor = "#337ab7"
     }
 
     return <>
-        {parts.map((part, i) => <>
+        {parts.map((part, i) => (
             <span key={i} style={part?.toString()?.toLowerCase() === search?.toString()?.toLowerCase() ? { backgroundColor: bgcolor, color } : {}}>
                 {part}
             </span>
-        </>)}
+        ))}
     </>;
 } 

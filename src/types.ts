@@ -49,6 +49,12 @@ export type TBodyProps = React.ComponentType<React.ComponentProps<"tbody"> & {
 export type TFooterProps = React.ComponentType<React.ComponentProps<"tfoot"> & {
 }>
 
+export type TLoadingProps = React.ComponentType<React.ComponentProps<"div"> & {
+}>
+
+export type TNoDataProps = React.ComponentType<React.ComponentProps<"div"> & {
+}>
+
 export type TRowType = "head" | "body" | "foot" | "master-detail";
 
 export enum TRowTypeEnum {
