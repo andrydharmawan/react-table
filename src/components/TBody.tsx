@@ -28,7 +28,6 @@ const Row: TRowProps = ({ rowIndex, rowData }) => {
 
     const {
         TableRow,
-        TableCell,
         columnsWithChild,
         masterDetail,
     } = useBgsTable<any[]>();
@@ -36,18 +35,18 @@ const Row: TRowProps = ({ rowIndex, rowData }) => {
     return <>
         <TableRowProvider key={rowIndex} open={masterDetail?.defaultOpen} rowRef={rowRef} rowData={rowData} rowIndex={rowIndex}>
             {({ open, handleRowClick }) => <>
-                <TableRow onClick={(e) => {
-                    handleRowClick(e)
-                }} ref={rowRef} rowData={rowData} rowIndex={rowIndex} type={TRowTypeEnum.body}>
+                <TableRow
+                    onClick={handleRowClick}
+                    ref={rowRef}
+                    rowData={rowData}
+                    rowIndex={rowIndex}
+                    type={TRowTypeEnum.body}
+                >
                     {columnsWithChild.map((column, columnIndex) => (
                         <Cell key={`${columnIndex}-${rowIndex}`} {...column as any} rowIndex={rowIndex} columnIndex={columnIndex} />
                     ))}
                 </TableRow>
-                {open && <TableRow rowIndex={rowIndex} type={TRowTypeEnum.masterDetail}>
-                    <TableCell rowIndex={rowIndex} columnIndex={0} className={masterDetail?.className} colSpan={columnsWithChild.length} type={TCellTypeEnum.masterDetail}>
-                        {renderChildren(masterDetail?.children as any, { rowData, rowIndex })}
-                    </TableCell>
-                </TableRow>}
+                {open && <MasterDetail rowIndex={rowIndex} rowData={rowData} />}
             </>}
         </TableRowProvider>
     </>
@@ -173,5 +172,20 @@ const NoData = () => {
                 </td>
             </tr>
         )}
+    </>
+}
+
+const MasterDetail: TRowProps = ({ rowIndex, rowData }) => {
+    const {
+        masterDetail,
+        columnsWithChild,
+    } = useBgsTable<any[]>()
+
+    return <>
+        <tr>
+            <td colSpan={columnsWithChild?.length}>
+                {renderChildren(masterDetail?.children as any, { rowData, rowIndex })}
+            </td>
+        </tr>
     </>
 }

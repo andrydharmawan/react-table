@@ -55,6 +55,9 @@ export type TLoadingProps = React.ComponentType<React.ComponentProps<"div"> & {
 export type TNoDataProps = React.ComponentType<React.ComponentProps<"div"> & {
 }>
 
+export type TMasterDetailProps = React.ComponentType<React.ComponentProps<"div"> & {
+}>
+
 export type TRowType = "head" | "body" | "foot" | "master-detail";
 
 export enum TRowTypeEnum {
