@@ -178,13 +178,16 @@ const NoData = () => {
 const MasterDetail: TRowProps = ({ rowIndex, rowData }) => {
     const {
         masterDetail,
+        TableMasterDetail,
         columnsWithChild,
     } = useBgsTable<any[]>()
 
     return <>
         <tr>
             <td colSpan={columnsWithChild?.length}>
-                {renderChildren(masterDetail?.children as any, { rowData, rowIndex })}
+                <TableMasterDetail>
+                    {renderChildren(masterDetail?.children as any, { rowData, rowIndex })}
+                </TableMasterDetail>
             </td>
         </tr>
     </>
