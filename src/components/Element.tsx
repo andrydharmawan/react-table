@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { ColumnGroupProps, ColumnProps, ColumunFooterProps, CreateColumn, CreateMasterDetail } from "../types";
+import { ColumnGroupProps, ColumnProps, ColumunFooterProps, CreateColumn, CreateMasterDetail, TCellProps } from "../types";
 
 export const createColumn = <T,>(): CreateColumn<T> => {
     const ColumnComponent = () => {
@@ -9,7 +9,7 @@ export const createColumn = <T,>(): CreateColumn<T> => {
     return ColumnComponent
 };
 
-type ElementCustom<T> = React.ComponentType<React.ComponentProps<"td">> & { __elementProps?: ColumnProps<T> }
+type ElementCustom<T> = TCellProps<T> & { __elementProps?: ColumnProps<T> }
 
 export const createColumnCustom = <T,>(props: ColumnProps<T>, element: ElementCustom<T>) => {
     element.displayName = "Column-Custom-0EHliBuh9viM6ZN";

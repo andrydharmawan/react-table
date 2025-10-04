@@ -125,6 +125,7 @@ const Cell: TCellProps<unknown> = (props) => {
                     <ElementCustomTd
                         ref={columnRef}
                         key={columnIndex}
+                        {...props}
                         onClick={(e: any) => {
                             handleCellClick(e)
                             props.onClick && props.onClick(e)
