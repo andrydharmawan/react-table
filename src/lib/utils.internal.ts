@@ -13,6 +13,15 @@ function isColumn<DRes>(
     );
 }
 
+function isColumnCustom<DRes>(
+    element: React.ReactNode
+): element is React.ReactElement<ColumnProps<DRes>> {
+    return (
+        React.isValidElement(element) &&
+        (element.type as React.FC).displayName === "Column-Custom-0EHliBuh9viM6ZN"
+    );
+}
+
 function isColumnGroup(
     element: React.ReactNode
 ): element is React.ReactElement<ColumnGroupProps> {
@@ -57,7 +66,7 @@ function isColumnFooter(
 export function parseColumns<DRes>(
     children: React.ReactNode
 ): ColumnMapping[] {
-    const result: ColumnMapping[] = []
+    const result: ColumnMapping[] = [];
 
     React.Children.toArray(children)
         .filter(React.isValidElement)
@@ -70,6 +79,16 @@ export function parseColumns<DRes>(
                 result.push({
                     ...child.props,
                     caption,
+                })
+            } else if (isColumnCustom(child)) {
+                const props = {
+                    ...(child.type as any).__elementProps,
+                    ...child.props,
+                }
+                result.push({
+                    ...props,
+                    isCustom: true,
+                    children: child.type
                 })
             } else if (isColumnGroup(child)) {
                 const { children, className, ...others } = child.props

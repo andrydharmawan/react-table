@@ -34,7 +34,7 @@ const Row: TRowProps = ({ rowIndex, rowData }) => {
 
     return <>
         <TableRowProvider key={rowIndex} open={masterDetail?.defaultOpen} rowRef={rowRef} rowData={rowData} rowIndex={rowIndex}>
-            {({ open, handleRowClick }) => <>
+            {({ handleRowClick }) => <>
                 <TableRow
                     onClick={handleRowClick}
                     ref={rowRef}
@@ -46,7 +46,7 @@ const Row: TRowProps = ({ rowIndex, rowData }) => {
                         <Cell key={`${columnIndex}-${rowIndex}`} {...column as any} rowIndex={rowIndex} columnIndex={columnIndex} />
                     ))}
                 </TableRow>
-                {open && <MasterDetail rowIndex={rowIndex} rowData={rowData} />}
+                <MasterDetail rowIndex={rowIndex} rowData={rowData} />
             </>}
         </TableRowProvider>
     </>
@@ -57,7 +57,7 @@ const Cell: TCellProps<unknown> = (props) => {
     const { rowData, rowRef } = useBgsTableRow()
     const formatted = useFormatted()
 
-    let { sticky, dataField, rowIndex, columnIndex, dataType } = props;
+    let { sticky, dataField, rowIndex, columnIndex, dataType, isCustom } = props as any;
 
     const {
         TableCell,
@@ -116,22 +116,34 @@ const Cell: TCellProps<unknown> = (props) => {
         value = formatted(value, dataType)
     }
 
+    const ElementCustomTd = isCustom ? props.children as unknown as any : null;
+
     return <>
         <TableCellProvider key={columnIndex} columnRef={columnRef} column={props} columnIndex={columnIndex} value={value} rowIndex={rowIndex} rowData={rowData}>
             {({ handleCellClick }) => <>
-                <TableCell
-                    ref={columnRef}
-                    key={columnIndex}
-                    {...props}
-                    onClick={e => {
-                        handleCellClick(e)
-                        props.onClick && props.onClick(e)
-                    }}
-                    data-sticky={sticky}
-                    type={TCellTypeEnum.body}
-                >
-                    {props.children ? renderChildren(props.children, { ...props, rowData, rowIndex, columnIndex, value }) : value}
-                </TableCell>
+                {isCustom ?
+                    <ElementCustomTd
+                        ref={columnRef}
+                        key={columnIndex}
+                        onClick={(e: any) => {
+                            handleCellClick(e)
+                            props.onClick && props.onClick(e)
+                        }}
+                        data-sticky={sticky}
+                    />
+                    : <TableCell
+                        ref={columnRef}
+                        key={columnIndex}
+                        {...props}
+                        onClick={e => {
+                            handleCellClick(e)
+                            props.onClick && props.onClick(e)
+                        }}
+                        data-sticky={sticky}
+                        type={TCellTypeEnum.body}
+                    >
+                        {props.children ? renderChildren(props.children, { ...props, rowData, rowIndex, columnIndex, value }) : value}
+                    </TableCell>}
             </>}
         </TableCellProvider>
     </>

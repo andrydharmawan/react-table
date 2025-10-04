@@ -8,7 +8,7 @@ export type ColumnProps<
     D = any,
     K extends NestedKeyOf<D> = NestedKeyOf<D>
 > = P & {
-    dataField?: NestedKeyOf<D>;
+    dataField?: K;
     caption?: string | React.ReactNode;
     noCaption?: boolean;
     width?: string | number;
@@ -22,6 +22,7 @@ export type ColumnProps<
 
 export type ColumnMapping = ColumnProps & {
     subColumns?: ColumnProps[]
+    isCustom?: boolean;
 }
 
 export type ColumnGroupProps<T = unknown> = T & {
@@ -56,6 +57,9 @@ export type TNoDataProps = React.ComponentType<React.ComponentProps<"div"> & {
 }>
 
 export type TMasterDetailProps = React.ComponentType<React.ComponentProps<"div"> & {
+}>
+
+export type TActionMasterDetailProps = React.ComponentType<React.ComponentProps<"div"> & {
 }>
 
 export type TRowType = "head" | "body" | "foot" | "master-detail";
