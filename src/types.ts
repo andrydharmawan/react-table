@@ -57,7 +57,7 @@ export type TLoadingProps = React.ComponentType<React.ComponentProps<"div"> & {
 export type TNoDataProps = React.ComponentType<React.ComponentProps<"div"> & {
 }>
 
-export type TMasterDetailProps = React.ComponentType<React.ComponentProps<"div"> & {
+export type TMasterDetailProps<T = unknown> = React.ComponentType<React.ComponentProps<"div"> & T & {
 }>
 
 export type TActionMasterDetailProps = React.ComponentType<React.ComponentProps<"div"> & {
@@ -103,7 +103,7 @@ export type TCellProps<T = unknown> = React.ComponentType<React.ComponentProps<"
 
 export type TCellCustomProps<T = unknown> = React.ComponentType<React.ComponentProps<"td"> & Partial<ColumnProps<T>> & {
     nativeProps?: NativePropsTd;
-    type?: TCellType;    
+    type?: TCellType;
     columnIndex?: number;
     rowIndex?: number;
 }>
