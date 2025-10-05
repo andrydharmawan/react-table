@@ -102,6 +102,10 @@ export type TCellProps<T = unknown> = React.ComponentType<React.ComponentProps<"
 }>
 
 export type TCellCustomProps<T = unknown> = React.ComponentType<React.ComponentProps<"td"> & Partial<ColumnProps<T>> & {
+    nativeProps?: NativePropsTd;
+    type?: TCellType;    
+    columnIndex: number;
+    rowIndex: number;
 }>
 
 export type RowData<T = any> = {
