@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from "react"
 import { useBgsTable } from "../contexts/Table.context"
-import { TCellProps, TCellTypeEnum, TRowProps, TRowTypeEnum } from "../types"
+import { NativePropsTd, TCellProps, TCellTypeEnum, TRowProps, TRowTypeEnum } from "../types"
 import TableRowProvider, { useBgsTableRow } from "../contexts/TRow.context"
 import TableCellProvider from "../contexts/TCell.context"
 import { getFieldValue, renderChildren, useFormatted } from "@bgscore/react-core"
@@ -57,7 +57,7 @@ const Cell: TCellProps<unknown> = (props) => {
     const { rowData, rowRef } = useBgsTableRow()
     const formatted = useFormatted()
 
-    let { sticky, dataField, rowIndex, columnIndex, dataType, isCustom } = props as any;
+    let { sticky, dataField, rowIndex, columnIndex, dataType, isCustom } = props;
 
     const {
         TableCell,
@@ -120,32 +120,35 @@ const Cell: TCellProps<unknown> = (props) => {
 
     return <>
         <TableCellProvider key={columnIndex} columnRef={columnRef} column={props} columnIndex={columnIndex} value={value} rowIndex={rowIndex} rowData={rowData}>
-            {({ handleCellClick }) => <>
-                {isCustom ?
-                    <ElementCustomTd
-                        ref={columnRef}
-                        key={columnIndex}
-                        {...props}
-                        onClick={(e: any) => {
-                            handleCellClick(e)
-                            props.onClick && props.onClick(e)
-                        }}
-                        data-sticky={sticky}
-                    />
-                    : <TableCell
-                        ref={columnRef}
-                        key={columnIndex}
-                        {...props}
-                        onClick={e => {
-                            handleCellClick(e)
-                            props.onClick && props.onClick(e)
-                        }}
-                        data-sticky={sticky}
-                        type={TCellTypeEnum.body}
-                    >
-                        {props.children ? renderChildren(props.children, { ...props, rowData, rowIndex, columnIndex, value }) : value}
-                    </TableCell>}
-            </>}
+            {({ handleCellClick }) => {
+                const nativeProps: NativePropsTd = {
+                    onClick: e => {
+                        handleCellClick(e)
+                        props.onClick && props.onClick(e)
+                    },
+                    "data-sticky": sticky
+                }
+
+                return <>
+                    {isCustom ?
+                        <ElementCustomTd
+                            ref={columnRef}
+                            key={columnIndex}
+                            {...props}
+                            nativeProps={nativeProps}
+                            type={TCellTypeEnum.body}
+                        />
+                        : <TableCell
+                            ref={columnRef}
+                            key={columnIndex}
+                            {...props}
+                            nativeProps={nativeProps}
+                            type={TCellTypeEnum.body}
+                        >
+                            {props.children ? renderChildren(props.children, { ...props, rowData, rowIndex, columnIndex, value }) : value}
+                        </TableCell>}
+                </>
+            }}
         </TableCellProvider>
     </>
 }

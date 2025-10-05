@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from "react"
 import { useBgsTable } from "../contexts/Table.context"
-import { ColumunFooterProps, FooterProps, TCellTypeEnum, TRowProps, TRowTypeEnum } from "../types"
+import { ColumunFooterProps, FooterProps, NativePropsTd, TCellTypeEnum, TRowProps, TRowTypeEnum } from "../types"
 
 export default function TFoot() {
     const {
@@ -37,10 +37,11 @@ const Cell: ColumunFooterProps<{
     rowRef: React.RefObject<HTMLTableRowElement | null>;
     rowIndex: number;
     columnIndex: number;
+    isCustom?: boolean;
 }> = (props) => {
     const columnRef = useRef<HTMLTableCellElement>(null)
 
-    let { sticky, rowIndex, columnIndex, rowRef, colSpan, prefix, suffix, dataField, type, ...others } = props;
+    let { sticky, rowIndex, columnIndex, rowRef, colSpan, prefix, suffix, dataField, type, isCustom } = props;
 
     const {
         TableCell,
@@ -96,10 +97,31 @@ const Cell: ColumunFooterProps<{
             window.removeEventListener("resize", handleResize);
         };
     }, [sticky, rowIndex, children, rowRef.current, columnRef.current]);
+    const ElementCustomTd = isCustom ? props.children as unknown as any : null;
+
+    const nativeProps: NativePropsTd = {
+        "data-sticky": sticky
+    }
 
     return <>
-        <TableCell columnIndex={columnIndex} rowIndex={rowIndex} ref={columnRef} key={columnIndex} {...others} colSpan={colSpan} data-sticky={sticky} type={TCellTypeEnum.foot}>
-            {prefix}{props.children}{suffix}
-        </TableCell>
+        {isCustom
+            ? <ElementCustomTd
+                ref={columnRef}
+                key={columnIndex}
+                {...props}
+                nativeProps={nativeProps}
+                colSpan={colSpan}
+                type={TCellTypeEnum.foot}
+            />
+            : <TableCell
+                ref={columnRef}
+                key={columnIndex}
+                {...props}
+                nativeProps={nativeProps}
+                colSpan={colSpan}
+                type={TCellTypeEnum.foot}
+            >
+                {prefix}{props.children}{suffix}
+            </TableCell>}
     </>
 }

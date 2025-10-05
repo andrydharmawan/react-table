@@ -1,5 +1,5 @@
 import { Children, NestedKeyOf, PathValue, SupportedFormattedType } from "@bgscore/react-core";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, TdHTMLAttributes } from "react";
 import { BgsTableDefaultProps } from "./components/Table";
 import { BgsTableRef } from "./contexts/Table.context";
 
@@ -17,6 +17,7 @@ export type ColumnProps<
     children?: Children<ColumnProps<P & ColumnData<D, P, PathValue<D, K>>>>;
     dataType?: SupportedFormattedType;
     sticky?: "left" | "right";
+    isCustom?: boolean;
     // allowResizing?: boolean;
 }
 
@@ -88,12 +89,19 @@ export type TRowProps<T = any, P = unknown> = React.ComponentType<React.Componen
 export type THeadProps<T = unknown> = React.ComponentType<React.ComponentProps<"th"> & ColumnProps<T> & {
     columnIndex: number;
     rowIndex: number;
+    nativeProps?: NativePropsTd;
 }>
+
+export type NativePropsTd = TdHTMLAttributes<HTMLTableCellElement> & { [key: string]: any; }
 
 export type TCellProps<T = unknown> = React.ComponentType<React.ComponentProps<"td"> & ColumnProps<T> & {
     columnIndex: number;
     rowIndex: number;
     type?: TCellType;
+    nativeProps?: NativePropsTd;
+}>
+
+export type TCellCustomProps<T = unknown> = React.ComponentType<React.ComponentProps<"td"> & Partial<ColumnProps<T>> & {
 }>
 
 export type RowData<T = any> = {

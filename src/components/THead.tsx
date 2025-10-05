@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from "react"
 import { useBgsTable } from "../contexts/Table.context"
-import { THeadProps, TRowTypeEnum } from "../types"
+import { NativePropsTd, THeadProps, TRowTypeEnum } from "../types"
 import TableColumnHeadProvider from "../contexts/THead.context"
 
 export default function THead() {
@@ -68,7 +68,7 @@ const Cell: THeadProps<unknown> = (props) => {
 
         window.addEventListener("resize", handleResize);
         handleResize();
-        
+
         const table = columnRef.current?.closest("table");
         const colGroup = table?.querySelector("colgroup");
         const cols = colGroup ? Array.from(colGroup.children) : [];
@@ -84,10 +84,14 @@ const Cell: THeadProps<unknown> = (props) => {
             window.removeEventListener("resize", handleResize);
         };
     }, [sticky, rowIndex, children, columnIndex]);
+    
+    const nativeProps: NativePropsTd = {
+        "data-sticky": sticky
+    }
 
     return <>
         <TableColumnHeadProvider {...props} columnIndex={columnIndex} columnRef={columnRef} rowIndex={rowIndex}>
-            <TableHead {...props} ref={columnRef} data-sticky={sticky}>
+            <TableHead nativeProps={nativeProps} {...props} ref={columnRef}>
                 {caption}
             </TableHead>
         </TableColumnHeadProvider>
