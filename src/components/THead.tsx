@@ -13,7 +13,7 @@ export default function THead() {
 
     return <>
         <colgroup>
-            {columnsWithChild.map(({ width }, index) => <col key={index} style={width ? { width } : {}} />)}
+            {columnsWithChild.map(({ width, className }, index) => <col key={index} {...width && { style: { width } }} className={className} />)}
         </colgroup>
         <TableHeader>
             {headers.map((level, levelIndex) => (
@@ -84,7 +84,7 @@ const Cell: THeadProps<unknown> = (props) => {
             window.removeEventListener("resize", handleResize);
         };
     }, [sticky, rowIndex, children, columnIndex]);
-    
+
     const nativeProps: NativePropsTd = {
         "data-sticky": sticky
     }
