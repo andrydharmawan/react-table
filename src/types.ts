@@ -7,7 +7,7 @@ export type ColumnProps<
     P = unknown,
     D = any,
     K extends NestedKeyOf<D> = NestedKeyOf<D>,
-    TDataType extends SupportedFormattedType = "string"
+    TDataType extends SupportedFormattedType = SupportedFormattedType
 > = P & {
     dataField?: K;
     caption?: string | React.ReactNode;
