@@ -57,7 +57,7 @@ const Cell: TCellProps<unknown> = (props) => {
     const { rowData, rowRef } = useBgsTableRow()
     const formatted = useFormatted()
 
-    let { sticky, dataField, rowIndex, columnIndex, dataType, isCustom } = props;
+    let { sticky, dataField, rowIndex, columnIndex, dataType, isCustom, format } = props;
 
     const {
         TableCell,
@@ -113,7 +113,7 @@ const Cell: TCellProps<unknown> = (props) => {
 
     let value = dataField && getFieldValue(rowData, dataField);//sama bgttt - TCell.context.tsx
     if (value && dataType) {
-        value = formatted(value, dataType)
+        value = formatted(value, dataType, format)
     }
 
     const ElementCustomTd = isCustom ? props.children as unknown as any : null;

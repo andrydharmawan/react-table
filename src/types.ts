@@ -1,4 +1,4 @@
-import { Children, NestedKeyOf, PathValue, SupportedFormattedType } from "@bgscore/react-core";
+import { Children, NestedKeyOf, PathValue, SupportedFormattedType, UseFormattedOptions } from "@bgscore/react-core";
 import { PropsWithChildren, TdHTMLAttributes } from "react";
 import { BgsTableDefaultProps } from "./components/Table";
 import { BgsTableRef } from "./contexts/Table.context";
@@ -6,7 +6,8 @@ import { BgsTableRef } from "./contexts/Table.context";
 export type ColumnProps<
     P = unknown,
     D = any,
-    K extends NestedKeyOf<D> = NestedKeyOf<D>
+    K extends NestedKeyOf<D> = NestedKeyOf<D>,
+    TDataType extends SupportedFormattedType = "string"
 > = P & {
     dataField?: K;
     caption?: string | React.ReactNode;
@@ -15,9 +16,10 @@ export type ColumnProps<
     className?: string;
     classNameHeader?: string;
     children?: Children<ColumnProps<P & ColumnData<D, P, PathValue<D, K>>>>;
-    dataType?: SupportedFormattedType;
+    dataType?: TDataType;
     sticky?: "left" | "right";
     isCustom?: boolean;
+    format?: UseFormattedOptions<TDataType>
     // allowResizing?: boolean;
 }
 

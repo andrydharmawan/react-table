@@ -28,7 +28,7 @@
     "author": "Andry Bagus Dharmawan",
     "license": "MIT",
     "peerDependencies": {
-        "@bgscore/react-core": ">=1.0.29",
+        "@bgscore/react-core": ">=1.0.30",
         "react": ">=17.0.0",
         "react-dom": ">=17.0.0"
     },
