@@ -3,7 +3,7 @@ import { useBgsTable } from "../contexts/Table.context"
 import { NativePropsTd, TCellProps, TCellTypeEnum, TRowProps, TRowTypeEnum } from "../types"
 import TableRowProvider, { useBgsTableRow } from "../contexts/TRow.context"
 import TableCellProvider from "../contexts/TCell.context"
-import { getFieldValue, renderChildren, useFormatted } from "@bgscore/react-core"
+import { getFieldValue, isNotEmpty, renderChildren, useFormatted } from "@bgscore/react-core"
 
 export default function TBody() {
     const {
@@ -112,7 +112,7 @@ const Cell: TCellProps<unknown> = (props) => {
     }, [sticky, rowIndex, children, rowRef.current, columnRef.current, columnIndex]);
 
     let value = dataField && getFieldValue(rowData, dataField);//sama bgttt - TCell.context.tsx
-    if (value && dataType) {
+    if (isNotEmpty(value) && dataType) {
         value = formatted(value, dataType, format)
     }
 
