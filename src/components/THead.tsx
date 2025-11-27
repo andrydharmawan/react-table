@@ -29,7 +29,7 @@ export default function THead() {
 const Cell: THeadProps<unknown> = (props) => {
     const columnRef = useRef<HTMLTableCellElement>(null)
 
-    let { sticky, caption, rowIndex, columnIndex } = props;
+    let { sticky, caption, rowIndex, columnIndex, rowSpan, colSpan } = props;
 
     const {
         TableHead,
@@ -86,7 +86,9 @@ const Cell: THeadProps<unknown> = (props) => {
     }, [sticky, rowIndex, children, columnIndex]);
 
     const nativeProps: NativePropsTd = {
-        "data-sticky": sticky
+        "data-sticky": sticky,
+        rowSpan,
+        colSpan,
     }
 
     return <>
