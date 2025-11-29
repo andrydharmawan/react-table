@@ -27,7 +27,7 @@ type TableCellProviderProps<P = unknown, D = any> = ColumnData & {
 }
 
 
-export default function TableCellProvider({ children, ...others }: TableCellProviderProps) {
+export default function TableCellProvider({ children, column, ...others }: TableCellProviderProps) {
     const row = useBgsTableRow()
 
     const handleCellClick: React.MouseEventHandler<HTMLTableCellElement> = (event) => {
@@ -36,6 +36,7 @@ export default function TableCellProvider({ children, ...others }: TableCellProv
     const value: TableCellReturnData = {
         ...row,
         ...others,
+        ...column,
         handleCellClick,
     }
 
